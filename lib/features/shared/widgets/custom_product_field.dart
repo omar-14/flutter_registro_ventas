@@ -83,6 +83,10 @@ class CustomProductField extends StatelessWidget {
           hintText: hint,
           errorText: errorMessage,
           focusColor: colors.primary,
+          // icon: const Icon(
+          //   Icons.qr_code_scanner,
+
+          // )
           // icon: Icon( Icons.supervised_user_circle_outlined, color: colors.primary, )
         ),
       ),

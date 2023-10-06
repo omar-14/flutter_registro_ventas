@@ -7,22 +7,19 @@ class ScannerQr extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: const Text("Scanner"),
-      floatingActionButton: FloatingActionButton(
-        elevation: 0,
-        child: const Icon(Icons.filter_center_focus),
-        onPressed: () async {
-          String barcodeScanRes;
-          try {
-            barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-                '#ff6666', 'Cancel', true, ScanMode.QR);
-            print(barcodeScanRes);
-          } on PlatformException {
-            barcodeScanRes = 'Failed to get platform version.';
-          }
-        },
-      ),
+    return FloatingActionButton(
+      elevation: 0,
+      child: const Icon(Icons.filter_center_focus),
+      onPressed: () async {
+        String barcodeScanRes;
+        try {
+          barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+              '#ff6666', 'Cancel', true, ScanMode.QR);
+          print(barcodeScanRes);
+        } on PlatformException {
+          barcodeScanRes = 'Failed to get platform version.';
+        }
+      },
     );
   }
 }
