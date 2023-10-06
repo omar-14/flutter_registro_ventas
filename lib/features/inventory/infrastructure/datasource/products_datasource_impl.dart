@@ -46,7 +46,8 @@ class ProductsDatasourceImpl extends ProductsDatasource {
   @override
   Future<List<Product>> getProductsByPage(
       {int limit = 10, int offset = 0}) async {
-    final response = await dio.get<List>("/products/search");
+    final response = await dio.get<List>("/products/search/",
+        queryParameters: {"limit": limit, "offset": offset});
 
     final List<Product> products = [];
 
@@ -60,7 +61,8 @@ class ProductsDatasourceImpl extends ProductsDatasource {
 
   @override
   Future<List<Product>> searchProductByTerm(String term) async {
-    final response = await dio.get("/products/search/");
+    final response =
+        await dio.get("/products/search/", queryParameters: {"like": term});
 
     final List<Product> products = [];
 
@@ -70,5 +72,16 @@ class ProductsDatasourceImpl extends ProductsDatasource {
     }
 
     return products;
+  }
+
+  @override
+  Future<bool> deleteProduct(String id) async {
+    try {
+      final response = await dio.delete("/products/$id/");
+
+      return response.statusCode == 204;
+    } catch (e) {
+      throw Exception();
+    }
   }
 }

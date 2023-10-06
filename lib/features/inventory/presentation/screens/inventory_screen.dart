@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intventory/features/inventory/presentation/providers/providers.dart';
-// import 'package:intventory/features/inventory/presentation/widgets/widgets.dart';
 import 'package:intventory/features/shared/shared.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,12 +37,12 @@ class _ProductsViewState extends ConsumerState {
   void initState() {
     super.initState();
 
-    // scrollController.addListener(() {
-    //   if ((scrollController.position.pixels + 40) <=
-    //       scrollController.position.maxScrollExtent) {
-    //     ref.read(productsProvider.notifier).loadNextPage();
-    //   }
-    // });
+    scrollController.addListener(() {
+      if ((scrollController.position.pixels + 100) <=
+          scrollController.position.maxScrollExtent) {
+        ref.read(productsProvider.notifier).loadNextPage();
+      }
+    });
   }
 
   @override

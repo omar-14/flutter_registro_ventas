@@ -18,17 +18,17 @@ class ProductNotifier extends StateNotifier<ProductState> {
     loadProduct();
   }
 
-  Product newEmptyProduct() {
+  Product newEmptyProduct(String key) {
     return Product(
       id: "0",
-      key: "",
+      key: key,
       nameProduct: "",
       brand: "",
       publicPrice: "0",
       originalPrice: "0",
       productProfit: "0",
       stock: 0,
-      createdBy: "3695dc2a-3dc6-4bba-9a1a-5bec54bc0391",
+      createdBy: "c2e19368-7e38-4875-9a6f-57b03e17b636",
       isSeasonProduct: false,
       productType: "",
     );
@@ -36,8 +36,11 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
   Future<void> loadProduct() async {
     try {
-      if (state.id == "new") {
-        state = state.copyWith(isLoading: false, product: newEmptyProduct());
+      if (state.id.contains("new")) {
+        final List<String> idSplit = state.id.split("-");
+        state = state.copyWith(
+            isLoading: false,
+            product: newEmptyProduct(idSplit.length > 1 ? idSplit[1] : ""));
         return;
       }
 
@@ -45,7 +48,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
       state = state.copyWith(isLoading: false, product: product);
     } catch (e) {
-      print(e);
+      throw Exception();
     }
   }
 }

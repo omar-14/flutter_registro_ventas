@@ -24,13 +24,13 @@ class HomeScreen extends StatelessWidget {
         icon: const Icon(Icons.add),
         onPressed: () {},
       ),
-      body: _MyChatView(),
+      body: const _MyChatView(),
     );
   }
 }
 
 class _MyChatView extends StatefulWidget {
-  const _MyChatView({super.key});
+  const _MyChatView();
 
   @override
   State<_MyChatView> createState() => __MyChatViewState();
@@ -54,7 +54,7 @@ class __MyChatViewState extends State<_MyChatView> {
           // Chart title
           title: ChartTitle(text: 'Half yearly sales analysis'),
           // Enable legend
-          legend: Legend(isVisible: true),
+          legend: const Legend(isVisible: true),
           // Enable tooltip
           tooltipBehavior: TooltipBehavior(enable: true),
           series: <ChartSeries<_SalesData, String>>[
@@ -64,18 +64,18 @@ class __MyChatViewState extends State<_MyChatView> {
                 yValueMapper: (_SalesData sales, _) => sales.sales,
                 name: 'Sales',
                 // Enable data label
-                dataLabelSettings: DataLabelSettings(isVisible: true))
+                dataLabelSettings: const DataLabelSettings(isVisible: true))
           ]),
       Padding(
         padding: const EdgeInsets.all(8.0),
         //Initialize the spark charts widget
         child: SfSparkLineChart.custom(
           //Enable the trackball
-          trackball:
-              SparkChartTrackball(activationMode: SparkChartActivationMode.tap),
+          trackball: const SparkChartTrackball(
+              activationMode: SparkChartActivationMode.tap),
           //Enable marker
-          marker:
-              SparkChartMarker(displayMode: SparkChartMarkerDisplayMode.all),
+          marker: const SparkChartMarker(
+              displayMode: SparkChartMarkerDisplayMode.all),
           //Enable data label
           labelDisplayMode: SparkChartLabelDisplayMode.all,
           xValueMapper: (int index) => data[index].year,

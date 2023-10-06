@@ -22,6 +22,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       : super(ProductFormState(
           // id: product.id,
           nameProduct: NameProduct.dirty(product.nameProduct),
+          key: Key.dirty(product.key),
           brand: Brand.dirty(product.brand),
           publicPrice: Price.dirty(product.publicPrice),
           originalPrice: OriginalPrice.dirty(product.originalPrice),
@@ -34,16 +35,13 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   Future<bool> onFormSubmit() async {
     _touchEverything();
 
-    print(!state.isFormValid);
-    print(onSubmitCallback == null);
-
     if (!state.isFormValid) return false;
 
     if (onSubmitCallback == null) return false;
 
     final productLike = {
       // 'id': (state.id == "0") ? null : state.id,
-      'key': "0",
+      'key': state.key.value == "" ? "0" : state.key.value,
       'name': state.nameProduct.value,
       'brand': state.brand.value,
       'public_unit_price': state.publicPrice.value,
@@ -68,6 +66,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     state = state.copyWith(
         isFormValid: Formz.validate([
       NameProduct.dirty(state.nameProduct.value),
+      Key.dirty(state.key.value),
       Brand.dirty(state.brand.value),
       Price.dirty(state.publicPrice.value),
       OriginalPrice.dirty(state.originalPrice.value),
@@ -87,6 +86,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         nameProduct: NameProduct.dirty(value),
         isFormValid: Formz.validate([
           NameProduct.dirty(value),
+          Key.dirty(state.key.value),
           Brand.dirty(state.brand.value),
           Price.dirty(state.publicPrice.value),
           OriginalPrice.dirty(state.originalPrice.value),
@@ -103,6 +103,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         isFormValid: Formz.validate([
           Brand.dirty(value),
           NameProduct.dirty(state.nameProduct.value),
+          Key.dirty(state.key.value),
           Price.dirty(state.publicPrice.value),
           OriginalPrice.dirty(state.originalPrice.value),
           CreatedBy.dirty(state.createdBy.value),
@@ -118,6 +119,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         isFormValid: Formz.validate([
           Brand.dirty(state.brand.value),
           NameProduct.dirty(state.nameProduct.value),
+          Key.dirty(state.key.value),
           Price.dirty(value),
           OriginalPrice.dirty(state.originalPrice.value),
           CreatedBy.dirty(state.createdBy.value),
@@ -132,6 +134,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         originalPrice: OriginalPrice.dirty(value),
         isFormValid: Formz.validate([
           NameProduct.dirty(state.nameProduct.value),
+          Key.dirty(state.key.value),
           Brand.dirty(state.brand.value),
           Price.dirty(state.publicPrice.value),
           OriginalPrice.dirty(value),
@@ -147,6 +150,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         productProfit: Profit.dirty(value),
         isFormValid: Formz.validate([
           NameProduct.dirty(state.nameProduct.value),
+          Key.dirty(state.key.value),
           Brand.dirty(state.brand.value),
           Price.dirty(state.publicPrice.value),
           OriginalPrice.dirty(state.originalPrice.value),
@@ -162,6 +166,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         productType: ProductType.dirty(value),
         isFormValid: Formz.validate([
           NameProduct.dirty(state.nameProduct.value),
+          Key.dirty(state.key.value),
           Brand.dirty(state.brand.value),
           Price.dirty(state.publicPrice.value),
           OriginalPrice.dirty(state.originalPrice.value),
@@ -177,6 +182,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         stock: Stock.dirty(value),
         isFormValid: Formz.validate([
           NameProduct.dirty(state.nameProduct.value),
+          Key.dirty(state.key.value),
           Brand.dirty(state.brand.value),
           Price.dirty(state.publicPrice.value),
           OriginalPrice.dirty(state.originalPrice.value),
@@ -184,6 +190,22 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
           Profit.dirty(state.productProfit.value),
           ProductType.dirty(state.productType.value),
           Stock.dirty(value),
+        ]));
+  }
+
+  void onKeyChanged(String value) {
+    state = state.copyWith(
+        key: Key.dirty(value),
+        isFormValid: Formz.validate([
+          NameProduct.dirty(state.nameProduct.value),
+          Key.dirty(value),
+          Brand.dirty(state.brand.value),
+          Price.dirty(state.publicPrice.value),
+          OriginalPrice.dirty(state.originalPrice.value),
+          CreatedBy.dirty(state.createdBy.value),
+          Profit.dirty(state.productProfit.value),
+          ProductType.dirty(state.productType.value),
+          Stock.dirty(state.stock.value),
         ]));
   }
 
@@ -208,6 +230,7 @@ class ProductFormState {
   final bool isFormValid;
   final String? id;
   final NameProduct nameProduct;
+  final Key key;
   final Brand brand;
   final Price publicPrice;
   final OriginalPrice originalPrice;
@@ -221,6 +244,7 @@ class ProductFormState {
     this.isFormValid = false,
     this.id,
     this.nameProduct = const NameProduct.dirty(""),
+    this.key = const Key.dirty(""),
     this.brand = const Brand.dirty(""),
     this.publicPrice = const Price.dirty(""),
     this.originalPrice = const OriginalPrice.dirty(""),
@@ -234,6 +258,7 @@ class ProductFormState {
     bool? isFormValid,
     String? id,
     NameProduct? nameProduct,
+    Key? key,
     Brand? brand,
     Price? publicPrice,
     OriginalPrice? originalPrice,
@@ -246,6 +271,7 @@ class ProductFormState {
         isFormValid: isFormValid ?? this.isFormValid,
         id: id ?? this.id,
         nameProduct: nameProduct ?? this.nameProduct,
+        key: key ?? this.key,
         brand: brand ?? this.brand,
         publicPrice: publicPrice ?? this.publicPrice,
         originalPrice: originalPrice ?? this.originalPrice,

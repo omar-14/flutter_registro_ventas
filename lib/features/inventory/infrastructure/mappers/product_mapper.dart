@@ -3,7 +3,7 @@ import 'package:intventory/features/inventory/domain/domain.dart';
 class ProductMapper {
   static jsonToEntity(Map<String, dynamic> json) => Product(
         id: json["id"],
-        key: json["key"],
+        key: json["key"] ?? "",
         nameProduct: json["name"],
         brand: json["brand"],
         publicPrice: json["public_unit_price"],

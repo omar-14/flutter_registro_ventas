@@ -29,4 +29,27 @@ class SearchProductNotifier extends StateNotifier<List<Product>> {
 
     return product;
   }
+
+  Future<Product> searchProductByKey(String key) async {
+    final List<Product> products = await searchProduct(key);
+
+    ref.read(searchQueryProvider.notifier).update((state) => key);
+
+    state = products;
+
+    return products.isEmpty
+        ? Product(
+            id: "new",
+            key: "",
+            nameProduct: "",
+            brand: "",
+            publicPrice: "",
+            originalPrice: "",
+            productProfit: "",
+            stock: 0,
+            createdBy: "",
+            isSeasonProduct: false,
+            productType: "")
+        : products.first;
+  }
 }
