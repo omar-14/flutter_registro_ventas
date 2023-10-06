@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intventory/features/inventory/presentation/providers/providers.dart';
 // import 'package:intventory/features/inventory/presentation/widgets/widgets.dart';
 import 'package:intventory/features/shared/shared.dart';
+import 'package:go_router/go_router.dart';
 
 class InventoryScreen extends StatelessWidget {
   const InventoryScreen({super.key});
@@ -14,12 +15,10 @@ class InventoryScreen extends StatelessWidget {
 
     return Scaffold(
       drawer: SideMenu(scaffoldKey: scaffoldKey),
-      appBar: AppBar(
-        title: const Text("Inventario"),
-      ),
-      body: _ProductsView(),
+      appBar: AppBar(title: const CustomAppbar()),
+      body: const _ProductsView(),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {},
+          onPressed: () => context.push("/product/new"),
           label: const Text("Agregar Producto"),
           icon: const Icon(Icons.add)),
     );
@@ -67,7 +66,7 @@ class _ProductsViewState extends ConsumerState {
         return Padding(
           padding: const EdgeInsets.only(top: 10),
           child: ListTile(
-            title: Text("Producto: ${product.name}"),
+            title: Text("Producto: ${product.nameProduct}"),
             subtitle: Padding(
                 padding: const EdgeInsets.only(top: 5),
                 child: Column(
@@ -79,25 +78,10 @@ class _ProductsViewState extends ConsumerState {
                       // Text("Tipo: ${product.productType}"),
                     ])),
             trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-            onTap: () {},
+            onTap: () => context.push("/product/${product.id}"),
           ),
         );
       },
     );
   }
-
-  // MasonryGridView.count(
-  //           controller: scrollController,
-  //           physics: const BouncingScrollPhysics(),
-  //           crossAxisCount: 2,
-  //           mainAxisSpacing: 20,
-  //           crossAxisSpacing: 35,
-  //           itemCount: productsState.products.length,
-  //           itemBuilder: (context, index) {
-  //             final product = productsState.products[index];
-
-  //             return GestureDetector(
-  //                 // onTap: () => context.push("/product/${product.id}"),
-  //                 child: ProductCard(product: product));
-  //           })
 }

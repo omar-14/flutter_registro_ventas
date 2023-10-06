@@ -3,10 +3,11 @@
 class Product {
   String id;
   String key;
-  String name;
+  String nameProduct;
   String brand;
-  String publicUnitPrice;
-  String originalUnitPrice;
+  String publicPrice;
+  String originalPrice;
+  String productProfit;
   int stock;
   String createdBy;
   bool isSeasonProduct;
@@ -21,10 +22,11 @@ class Product {
   Product({
     required this.id,
     required this.key,
-    required this.name,
+    required this.nameProduct,
     required this.brand,
-    required this.publicUnitPrice,
-    required this.originalUnitPrice,
+    required this.publicPrice,
+    required this.originalPrice,
+    required this.productProfit,
     required this.stock,
     required this.createdBy,
     required this.isSeasonProduct,
