@@ -32,7 +32,7 @@ const appMenuItems = <MenuItem>[
   MenuItem(
       title: "Inventario",
       subtitle: "Vista de inventario",
-      link: "/intventory",
+      link: "/inventory",
       icon: Icons.inventory_2_outlined),
   MenuItem(
       title: "Usuarios",
