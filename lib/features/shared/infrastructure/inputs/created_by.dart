@@ -1,28 +1,28 @@
 import 'package:formz/formz.dart';
 
 // Define input validation errors
-enum CreateByError { empty, format }
+enum CreatedByError { empty, format }
 
 // Extend FormzInput and provide the input type and error type.
-class CreateBy extends FormzInput<String, CreateByError> {
+class CreatedBy extends FormzInput<String, CreatedByError> {
   // Call super.pure to represent an unmodified form input.
-  const CreateBy.pure() : super.pure('');
+  const CreatedBy.pure() : super.pure('');
 
   // Call super.dirty to represent a modified form input.
-  const CreateBy.dirty(String value) : super.dirty(value);
+  const CreatedBy.dirty(String value) : super.dirty(value);
 
   String? get errorMessage {
     if (isValid || isPure) return null;
 
-    if (displayError == CreateByError.empty) return 'El campo es requerido';
+    if (displayError == CreatedByError.empty) return 'El campo es requerido';
 
     return null;
   }
 
   // Override validator to handle validating a given input value.
   @override
-  CreateByError? validator(String value) {
-    if (value.isEmpty || value.trim().isEmpty) return CreateByError.empty;
+  CreatedByError? validator(String value) {
+    if (value.isEmpty || value.trim().isEmpty) return CreatedByError.empty;
     return null;
   }
 }

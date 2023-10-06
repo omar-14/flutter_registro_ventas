@@ -10,3 +10,6 @@ export 'created_by.dart';
 export 'original_price.dart';
 export 'key.dart';
 export 'profit.dart';
+export 'name_product.dart';
+export 'brand.dart';
+export 'product_type.dart';
