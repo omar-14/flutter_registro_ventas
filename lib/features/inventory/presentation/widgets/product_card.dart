@@ -14,7 +14,7 @@ class ProductCard extends StatelessWidget {
           images: [],
         ),
         Text(
-          product.name,
+          product.nameProduct,
           textAlign: TextAlign.center,
         ),
         const SizedBox(
