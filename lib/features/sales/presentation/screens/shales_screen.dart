@@ -13,6 +13,11 @@ class SalesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Ventas"),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        label: const Text("Crear Venta"),
+        icon: const Icon(Icons.add),
+      ),
       body: const Center(child: Text("ventas")),
     );
   }

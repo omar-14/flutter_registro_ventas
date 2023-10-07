@@ -1,0 +1,1 @@
+class SaleNotFound implements Exception {}
