@@ -50,8 +50,8 @@ class SalesDatasourceImpl extends SalesDatasource {
   @override
   Future<List<Sale>> listSales({int limit = 10, int offset = 0}) async {
     try {
-      final response = await dio.delete("/sales/",
-          queryParameters: {"limit": limit, "offset": offset});
+      final response = await dio
+          .get("/sales/", queryParameters: {"limit": limit, "offset": offset});
 
       final List<Sale> sales = [];
 
