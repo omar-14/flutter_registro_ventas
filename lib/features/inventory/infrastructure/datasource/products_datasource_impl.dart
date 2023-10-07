@@ -15,7 +15,7 @@ class ProductsDatasourceImpl extends ProductsDatasource {
         ));
 
   @override
-  Future<Product> createUpdateProducto(Map<String, dynamic> productLike) async {
+  Future<Product> createProduct(Map<String, dynamic> productLike) async {
     try {
       final response = await dio.post("/products/", data: productLike);
 
@@ -80,6 +80,20 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final response = await dio.delete("/products/$id/");
 
       return response.statusCode == 204;
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<Product> updateProduct(Map<String, dynamic> productLike) async {
+    try {
+      final response =
+          await dio.put("/products/${productLike['id']}/", data: productLike);
+
+      final product = ProductMapper.jsonToEntity(response.data);
+
+      return product;
     } catch (e) {
       throw Exception();
     }

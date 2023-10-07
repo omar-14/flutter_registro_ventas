@@ -6,8 +6,8 @@ class ProductsRepositoryImpl extends ProductsRespository {
   ProductsRepositoryImpl(this.datasource);
 
   @override
-  Future<Product> createUpdateProducto(Map<String, dynamic> productLike) {
-    return datasource.createUpdateProducto(productLike);
+  Future<Product> createProduct(Map<String, dynamic> productLike) {
+    return datasource.createProduct(productLike);
   }
 
   @override
@@ -28,5 +28,10 @@ class ProductsRepositoryImpl extends ProductsRespository {
   @override
   Future<bool> deleteProduct(String id) {
     return datasource.deleteProduct(id);
+  }
+
+  @override
+  Future<Product> updateProduct(Map<String, dynamic> productLike) {
+    return datasource.updateProduct(productLike);
   }
 }

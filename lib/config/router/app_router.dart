@@ -9,7 +9,7 @@ import 'package:intventory/features/sales/presentation/screens/shales_screen.dar
 import 'package:intventory/features/shared/widgets/qr_generator.dart';
 import 'package:intventory/features/users/presentation/screens/users_screen.dart';
 
-final appRouter = GoRouter(initialLocation: "/inventory", routes: [
+final appRouter = GoRouter(initialLocation: "/", routes: [
   GoRoute(
     path: "/",
     builder: (context, state) => const HomeScreen(),
@@ -31,8 +31,9 @@ final appRouter = GoRouter(initialLocation: "/inventory", routes: [
     builder: (context, state) => const InventoryScreen(),
   ),
   GoRoute(
-    path: "/qr",
-    builder: (context, state) => const QRGenerator(),
+    path: "/qr/:key",
+    builder: (context, state) =>
+        QRGenerator(keyProduct: state.pathParameters["key"] ?? "no-key"),
   ),
   GoRoute(
     path: "/product/:id",

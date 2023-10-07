@@ -17,10 +17,16 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
     loadNextPage();
   }
 
-  Future<bool> createOrUpdateProduct(Map<String, dynamic> productLike) async {
+  Future<bool> createOrUpdateProduct(Map<String, dynamic> productLike,
+      {String id = ""}) async {
     try {
-      final product =
-          await productsRepository.createUpdateProducto(productLike);
+      final Product product;
+
+      if (productLike["id"] == "0") {
+        product = await productsRepository.createProduct(productLike);
+      } else {
+        product = await productsRepository.updateProduct(productLike);
+      }
 
       final isProductInList =
           state.products.any((element) => element.id == product.id);

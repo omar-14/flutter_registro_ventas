@@ -20,7 +20,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
   ProductFormNotifier({this.onSubmitCallback, required Product product})
       : super(ProductFormState(
-          // id: product.id,
+          id: product.id,
           nameProduct: NameProduct.dirty(product.nameProduct),
           key: Key.dirty(product.key),
           brand: Brand.dirty(product.brand),
@@ -52,6 +52,10 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       'is_season_product': false,
       'stock': state.stock.value,
     };
+
+    if (state.id != null) {
+      productLike["id"] = state.id.toString();
+    }
 
     // print(productLike);
 

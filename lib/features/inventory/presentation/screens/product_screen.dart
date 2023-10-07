@@ -5,6 +5,7 @@ import 'package:intventory/features/inventory/domain/domain.dart';
 import 'package:intventory/features/inventory/presentation/providers/form/product_form_provider.dart';
 import 'package:intventory/features/inventory/presentation/widgets/widgets.dart';
 import 'package:intventory/features/shared/widgets/widgets.dart';
+import 'package:uuid/uuid.dart';
 
 import '../providers/providers.dart';
 
@@ -56,7 +57,7 @@ class ProductScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text((productState.product?.nameProduct == "")
+        title: Text((idProduct.contains("new"))
             ? "Nuevo Producto"
             : "Modifica producto"),
         actions: productState.product?.nameProduct != ""
@@ -94,19 +95,49 @@ class ProductScreen extends ConsumerWidget {
         children: [
           FloatingActionButton.extended(
               onPressed: () {
-                ref
-                    .read(productFormProvider(productState.product!).notifier)
-                    .onFormSubmit()
-                    .then((value) {
-                  if (!value) return;
+                const uuid = Uuid();
 
-                  FocusScope.of(context).unfocus();
-                  showSnackbar(context);
-                  context.pop();
-                });
+                context.push("/qr/${uuid.v4()}");
+                // context.push("/qr");
               },
-              label: const Text("Actualizar"),
-              icon: const Icon(Icons.save)),
+              label: const Text("Generar QR"),
+              icon: const Icon(Icons.qr_code_2_sharp)),
+          const SizedBox(
+            height: 20,
+          ),
+          (idProduct.contains("new"))
+              ? FloatingActionButton.extended(
+                  onPressed: () {
+                    ref
+                        .read(
+                            productFormProvider(productState.product!).notifier)
+                        .onFormSubmit()
+                        .then((value) {
+                      if (!value) return;
+
+                      FocusScope.of(context).unfocus();
+                      showSnackbar(context);
+                      context.pop();
+                    });
+                  },
+                  label: const Text("Guardar"),
+                  icon: const Icon(Icons.save))
+              : FloatingActionButton.extended(
+                  onPressed: () {
+                    ref
+                        .read(
+                            productFormProvider(productState.product!).notifier)
+                        .onFormSubmit()
+                        .then((value) {
+                      if (!value) return;
+
+                      FocusScope.of(context).unfocus();
+                      showSnackbar(context);
+                      context.pop();
+                    });
+                  },
+                  label: const Text("Actualizar"),
+                  icon: const Icon(Icons.save)),
           const SizedBox(
             height: 20,
           ),
