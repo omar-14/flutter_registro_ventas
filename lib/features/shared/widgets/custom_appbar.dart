@@ -16,6 +16,11 @@ class CustomAppbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
     final titleStyle = Theme.of(context).textTheme.titleSmall;
+
+    void pushToScreen(String path) {
+      context.push(path);
+    }
+
     return SafeArea(
         top: false,
         child: Padding(
@@ -35,10 +40,9 @@ class CustomAppbar extends ConsumerWidget {
                                   .read(searchProductsProvider.notifier)
                                   .searchMoviesByQuery,
                               initialProduct: searchMovies))
-                      .then((movie) {
-                    if (movie == null) return;
-
-                    context.push('/movie/${movie.id}');
+                      .then((product) {
+                    if (product == null) return;
+                    pushToScreen('/product/${product.id}');
                   });
                 },
                 icon: const Icon(Icons.search),
@@ -50,11 +54,21 @@ class CustomAppbar extends ConsumerWidget {
               const Spacer(),
               IconButton(
                   onPressed: () async {
-                    String barcodeScanRes;
+                    String barcodeScanRes = "";
                     try {
                       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
                           '#ff6666', 'Cancel', true, ScanMode.QR);
-                      print(barcodeScanRes);
+
+                      if (barcodeScanRes.isNotEmpty && barcodeScanRes != "-1") {
+                        Product product = await ref
+                            .read(searchProductsProvider.notifier)
+                            .searchProductByKey(barcodeScanRes);
+                        if (product.id.contains("new")) {
+                          product.id = "${product.id}-$barcodeScanRes";
+                        }
+
+                        pushToScreen('/product/${product.id}');
+                      }
                     } on PlatformException {
                       barcodeScanRes = 'Failed to get platform version.';
                     }
