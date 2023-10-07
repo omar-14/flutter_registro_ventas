@@ -34,7 +34,7 @@ class _SalesView extends ConsumerStatefulWidget {
   _SalesViewState createState() => _SalesViewState();
 }
 
-class _SalesViewState extends ConsumerState {
+class _SalesViewState extends ConsumerState<_SalesView> {
   final scrollController = ScrollController();
   @override
   void initState() {
