@@ -5,7 +5,7 @@ import 'package:intventory/features/home/presentation/screens/home_screen.dart';
 import 'package:intventory/features/inventory/presentation/screens/inventory_screen.dart';
 import 'package:intventory/features/inventory/presentation/screens/product_screen.dart';
 import 'package:intventory/features/recommendations/presentations/screens/recommendations_screen.dart';
-import 'package:intventory/features/sales/presentation/screens/sale_screen.dart';
+import 'package:intventory/features/sales/presentation/screens/details_sale_screen.dart';
 import 'package:intventory/features/sales/presentation/screens/sales_screen.dart';
 import 'package:intventory/features/shared/widgets/qr_generator.dart';
 import 'package:intventory/features/users/presentation/screens/users_screen.dart';
@@ -26,7 +26,7 @@ final appRouter = GoRouter(initialLocation: "/sales", routes: [
   GoRoute(
     path: "/sales/:id",
     builder: (context, state) =>
-        SaleScreen(idSale: state.pathParameters["id"] ?? "no-id"),
+        DetailsSaleScreen(idSale: state.pathParameters["id"] ?? "no-id"),
   ),
   GoRoute(
     path: "/recommendations",

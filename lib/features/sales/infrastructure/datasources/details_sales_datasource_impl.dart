@@ -26,9 +26,8 @@ class DetailsSalesDatasourceImpl extends DetailsSalesDatasource {
   Future<List<DetailsSale>> getDetailsSalesById(String id,
       {int limit = 10, int offset = 0}) async {
     try {
-      final response = await dio.get(
-        "/sales-products/",
-      );
+      final response = await dio.get("/list/sales-products",
+          queryParameters: {"limit": limit, "offset": offset, "id": id});
 
       final List<DetailsSale> detailsSales = [];
 

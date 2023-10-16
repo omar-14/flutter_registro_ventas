@@ -37,7 +37,7 @@ class SalesDatasourceImpl extends SalesDatasource {
   @override
   Future<Sale> getSaleById(String id) async {
     try {
-      final response = await dio.get("/sales/$id/");
+      final response = await dio.get("/sales/$id");
 
       final Sale sale = SaleMapper.jsonToEntity(response.data);
 
@@ -51,7 +51,7 @@ class SalesDatasourceImpl extends SalesDatasource {
   Future<List<Sale>> listSales({int limit = 10, int offset = 0}) async {
     try {
       final response = await dio
-          .get("/sales/", queryParameters: {"limit": limit, "offset": offset});
+          .get("/sales", queryParameters: {"limit": limit, "offset": offset});
 
       final List<Sale> sales = [];
 

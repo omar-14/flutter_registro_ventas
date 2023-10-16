@@ -35,6 +35,33 @@ class SalesNotifier extends StateNotifier<SalesState> {
         offset: state.offset + 10,
         sales: [...state.sales, ...sales]);
   }
+
+  Future createSale() async {
+    final emptySale = {
+      "is_completed": false,
+      "user": "c2e19368-7e38-4875-9a6f-57b03e17b636",
+      "total": 0
+    };
+    final newSale = await salesRepository.createSale(emptySale);
+
+    state = state.copyWith(isLoading: false, sales: [newSale, ...state.sales]);
+
+    return newSale;
+  }
+
+  Future<bool> deleteSale(id) async {
+    try {
+      final isDelete = await salesRepository.deleteSale(id);
+
+      if (!isDelete) return false;
+
+      state.sales.removeWhere((element) => element.id == id);
+
+      return isDelete;
+    } catch (e) {
+      throw Exception();
+    }
+  }
 }
 
 class SalesState {

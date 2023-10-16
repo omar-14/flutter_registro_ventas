@@ -1,57 +1,117 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:flutter/rendering.dart';
+// import 'package:qr_code_generator/styles.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-// import 'package:image_gallery_saver/image_gallery_saver.dart';
 
-class QRGenerator extends StatelessWidget {
-  const QRGenerator({super.key});
+class QRGenerator extends StatefulWidget {
+  final String keyProduct;
+  const QRGenerator({super.key, required this.keyProduct});
+
+  @override
+  State<QRGenerator> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<QRGenerator> {
+  // final String keyProduct;
+  final GlobalKey _qrkey = GlobalKey();
+  bool dirExists = false;
+  dynamic externalDir = '/storage/emulated/0/Download/Qr_code';
+
+  // _MainPageState({required this.keyProduct});
+
+  Future<void> _captureAndSavePng() async {
+    try {
+      RenderRepaintBoundary boundary =
+          _qrkey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      var image = await boundary.toImage(pixelRatio: 3.0);
+
+      // //Drawing White Background because Qr Code is Black
+      final whitePaint = Paint()
+        ..color = const Color.fromARGB(255, 255, 255, 255);
+      final recorder = PictureRecorder();
+      final canvas = Canvas(recorder,
+          Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()));
+      canvas.drawRect(
+          Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
+          whitePaint);
+      canvas.drawImage(image, Offset.zero, Paint());
+      final picture = recorder.endRecording();
+      final img = await picture.toImage(image.width, image.height);
+      ByteData? byteData = await img.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      //Check for duplicate file name to avoid Override
+      String fileName = 'qr_code';
+      int i = 1;
+      while (await File('$externalDir/$fileName.png').exists()) {
+        fileName = 'qr_code_$i';
+        i++;
+      }
+
+      // Check if Directory Path exists or not
+      dirExists = await File(externalDir).exists();
+      //if not then create the path
+      if (!dirExists) {
+        await Directory(externalDir).create(recursive: true);
+        dirExists = true;
+      }
+
+      final file = await File('$externalDir/$fileName.png').create();
+      await file.writeAsBytes(pngBytes);
+
+      if (!mounted) return;
+      const snackBar = SnackBar(content: Text('QR Guardado'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } catch (e) {
+      if (!mounted) return;
+      const snackBar = SnackBar(content: Text('Ocurrio un Error al guardar'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("QR"),
+        title: const Text('QR Code Generator'),
+        centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
+      body: SingleChildScrollView(
+          child: Column(
+        children: [
+          const SizedBox(
+            height: 15,
+          ),
+          Center(
+            child: RepaintBoundary(
+              key: _qrkey,
               child: QrImageView(
-                data: 'Hola-es-el-qr',
+                data: widget.keyProduct,
                 version: QrVersions.auto,
-                size: 320,
-                gapless: false,
+                size: 250.0,
+                gapless: true,
+                errorStateBuilder: (ctx, err) {
+                  return const Center(
+                    child: Text(
+                      'Paso un error al crearse el QR',
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
               ),
             ),
-            const SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () async {},
-              child: Text('Guardar QR'),
+          ),
+          FilledButton(
+            onPressed: _captureAndSavePng,
+            child: const Text(
+              'Guardar QR',
             ),
-          ],
-        ),
-      ),
+          ),
+        ],
+      )),
     );
-  }
-
-  Future<bool> saveQRToGallery(String data) async {
-    try {
-      final image = await QrPainter(
-        data: data,
-        version: QrVersions.auto,
-        // size: 200.0,
-      ).toImage(200); // Tamaño de la imagen QR
-      final byteData = await image.toByteData(format: ImageByteFormat.png);
-      final buffer = byteData!.buffer.asUint8List();
-      await ImageGallerySaver.saveImage(Uint8List.fromList(buffer));
-      return true;
-    } catch (e) {
-      print(e.toString());
-      return false;
-    }
   }
 }

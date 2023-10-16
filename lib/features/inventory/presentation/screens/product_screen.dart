@@ -215,7 +215,7 @@ class _ProductFormView extends ConsumerWidget {
           label: 'Precio Publico',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           initialValue: product.publicPrice.toString(),
-          onChanged:
+          onChanged: (value) =>
               ref.read(productFormProvider(product).notifier).onPriceChanged,
           errorMessage: productForm.publicPrice.errorMessage,
         ),

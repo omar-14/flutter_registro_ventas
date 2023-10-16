@@ -43,7 +43,7 @@ class SearchProductNotifier extends StateNotifier<List<Product>> {
             key: "",
             nameProduct: "",
             brand: "",
-            publicPrice: "",
+            publicPrice: "0",
             originalPrice: "",
             productProfit: "",
             stock: 0,

@@ -1,25 +1,36 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intventory/features/inventory/domain/domain.dart';
+import 'package:intventory/features/inventory/presentation/providers/providers.dart';
 import 'package:intventory/features/sales/domain/domain.dart';
 import 'package:intventory/features/sales/presentation/providers/providers.dart';
 
 final detailsSalesProvider = StateNotifierProvider.autoDispose
     .family<DetailsSalesNotifier, DetailsSalesState, String>((ref, id) {
   final detailsSalesRepository = ref.watch(detailsSalesRepositoryProvider);
+  final productsRepository = ref.watch(productsRepositoryProvider);
 
   return DetailsSalesNotifier(
-      detailsSalesRepository: detailsSalesRepository, id: id);
+      detailsSalesRepository: detailsSalesRepository,
+      id: id,
+      productsRepository: productsRepository);
 });
 
 class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
   final DetailsSalesRepository detailsSalesRepository;
+  final ProductsRespository productsRepository;
   final String id;
 
-  DetailsSalesNotifier({required this.detailsSalesRepository, required this.id})
+  DetailsSalesNotifier(
+      {required this.productsRepository,
+      required this.detailsSalesRepository,
+      required this.id})
       : super(DetailsSalesState()) {
     loadNextPage(id);
   }
 
   Future loadNextPage(String id) async {
+    if (id.contains("new")) return;
+
     if (state.isLoading || state.isLastPage) return;
 
     state = state.copyWith(isLoading: true);
@@ -31,6 +42,13 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
       state = state.copyWith(isLoading: false, isLastPage: true);
 
       return;
+    }
+
+    for (final saleDetail in detailsSales) {
+      final product =
+          await productsRepository.getProductById(saleDetail.productId);
+
+      saleDetail.product = product;
     }
 
     state = state.copyWith(
