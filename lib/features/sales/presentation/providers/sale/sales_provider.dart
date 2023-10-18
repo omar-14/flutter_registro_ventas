@@ -2,7 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intventory/features/sales/domain/domain.dart';
 import 'package:intventory/features/sales/presentation/providers/providers.dart';
 
-final salesProvider = StateNotifierProvider<SalesNotifier, SalesState>((ref) {
+final salesProvider =
+    StateNotifierProvider.autoDispose<SalesNotifier, SalesState>((ref) {
   final salesRepository = ref.watch(salesRepositoryProvider);
 
   return SalesNotifier(salesRepository: salesRepository);
@@ -13,6 +14,27 @@ class SalesNotifier extends StateNotifier<SalesState> {
 
   SalesNotifier({required this.salesRepository}) : super(SalesState()) {
     loadNextPage();
+  }
+
+  Future refreshPage() async {
+    if (state.isLoading || state.isLastPage) return;
+
+    state = state.copyWith(isLoading: true);
+
+    final sales = await salesRepository.listSales(
+        limit: state.limit, offset: state.offset);
+
+    if (sales.isEmpty) {
+      state = state.copyWith(isLoading: false, isLastPage: true);
+
+      return;
+    }
+
+    state = state.copyWith(
+        isLastPage: false,
+        isLoading: false,
+        offset: state.offset + 10,
+        sales: sales);
   }
 
   Future loadNextPage() async {

@@ -8,9 +8,13 @@ final detailsSalesProvider = StateNotifierProvider.autoDispose
     .family<DetailsSalesNotifier, DetailsSalesState, String>((ref, id) {
   final detailsSalesRepository = ref.watch(detailsSalesRepositoryProvider);
   final productsRepository = ref.watch(productsRepositoryProvider);
+  final saleState = ref.watch(saleProvider(id).notifier);
+  final salesState = ref.watch(salesProvider.notifier);
 
   return DetailsSalesNotifier(
       detailsSalesRepository: detailsSalesRepository,
+      saleState: saleState,
+      salesState: salesState,
       id: id,
       productsRepository: productsRepository);
 });
@@ -18,30 +22,26 @@ final detailsSalesProvider = StateNotifierProvider.autoDispose
 class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
   final DetailsSalesRepository detailsSalesRepository;
   final ProductsRespository productsRepository;
+  final SaleNotifier saleState;
+  final SalesNotifier salesState;
   final String id;
 
   DetailsSalesNotifier(
       {required this.productsRepository,
       required this.detailsSalesRepository,
+      required this.saleState,
+      required this.salesState,
       required this.id})
       : super(DetailsSalesState()) {
     loadNextPage(id);
   }
 
-  Future loadNextPage(String id) async {
-    if (id.contains("new")) return;
-
-    if (state.isLoading || state.isLastPage) return;
-
-    state = state.copyWith(isLoading: true);
-
+  Future getDetailsSales(id) async {
     final detailsSales = await detailsSalesRepository.getDetailsSalesById(id,
         limit: state.limit, offset: state.offset);
 
     if (detailsSales.isEmpty) {
-      state = state.copyWith(isLoading: false, isLastPage: true);
-
-      return;
+      return [];
     }
 
     for (final saleDetail in detailsSales) {
@@ -51,11 +51,99 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
       saleDetail.product = product;
     }
 
+    return detailsSales;
+  }
+
+  Future loadNextPage(String id) async {
+    if (id.contains("new")) return;
+
+    if (state.isLoading || state.isLastPage) return;
+
+    state = state.copyWith(isLoading: true);
+
+    final detailsSales = await getDetailsSales(id);
+
+    if (detailsSales.isEmpty) {
+      state = state.copyWith(isLoading: false, isLastPage: true);
+
+      return;
+    }
+
     state = state.copyWith(
         isLastPage: false,
         isLoading: false,
         offset: state.offset + 10,
         detailsSales: [...state.detailsSales, ...detailsSales]);
+  }
+
+  Future createDetailSale(Map<String, dynamic> detailSaleLike) async {
+    try {
+      if (state.isLoading) return;
+
+      state = state.copyWith(isLoading: true);
+
+      final isCreated =
+          await detailsSalesRepository.createDetailSale(detailSaleLike);
+
+      if (!isCreated) {
+        state = state.copyWith(isLoading: false);
+        return false;
+      }
+
+      state = state.copyWith(offset: 0);
+
+      final detailsSales = await getDetailsSales(id);
+
+      saleState.loadSale();
+
+      salesState.state = salesState.state.copyWith(offset: 0);
+      salesState.refreshPage();
+
+      state = state.copyWith(
+          isLoading: false,
+          offset: state.offset + 10,
+          detailsSales: detailsSales);
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  Future deleteDetailProduct(String id) async {
+    try {
+      if (state.isLoading) return;
+
+      state = state.copyWith(isLoading: true);
+
+      final isDelete = await detailsSalesRepository.deleteDetailSale(id);
+
+      if (!isDelete) return false;
+
+      state.detailsSales.removeWhere((element) => element.id == id);
+
+      state = state.copyWith(isLoading: false);
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  Future updateQuantityDetailProduct(int quantity, String id) async {
+    try {
+      if (state.isLoading) return;
+
+      state = state.copyWith(isLoading: true);
+
+      final updateDetailProduct = await detailsSalesRepository
+          .updateDetailSale({"product_quantity": quantity}, id);
+
+      state = state.copyWith(isLoading: false);
+
+      final index =
+          state.detailsSales.indexWhere((element) => element.id == id);
+
+      state.detailsSales[index] = updateDetailProduct;
+    } catch (e) {
+      throw Exception();
+    }
   }
 }
 
