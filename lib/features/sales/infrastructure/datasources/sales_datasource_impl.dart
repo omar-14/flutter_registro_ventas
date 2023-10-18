@@ -90,7 +90,7 @@ class SalesDatasourceImpl extends SalesDatasource {
   Future<Sale> updateSale(Map<String, dynamic> saleLike) async {
     try {
       final response =
-          await dio.delete("/sales/${saleLike["id"]}/", data: saleLike);
+          await dio.patch("/sales/${saleLike["id"]}/", data: saleLike);
 
       final Sale sale = SaleMapper.jsonToEntity(response.data);
 

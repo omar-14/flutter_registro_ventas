@@ -11,15 +11,25 @@ class DetailsSalesDatasourceImpl extends DetailsSalesDatasource {
       : dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
 
   @override
-  Future<DetailsSale> createDetailSale(Map<String, dynamic> detailSaleLike) {
-    // TODO: implement createDetailSale
-    throw UnimplementedError();
+  Future<bool> createDetailSale(Map<String, dynamic> detailSaleLike) async {
+    try {
+      final response = await dio.post("/sales-products", data: detailSaleLike);
+
+      return response.statusCode == 201;
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   @override
-  Future<bool> deleteDetailSale(String id) {
-    // TODO: implement deleteDetailSale
-    throw UnimplementedError();
+  Future<bool> deleteDetailSale(String id) async {
+    try {
+      final response = await dio.delete("/sales-products/$id/");
+
+      return response.statusCode == 204;
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   @override
@@ -43,8 +53,18 @@ class DetailsSalesDatasourceImpl extends DetailsSalesDatasource {
   }
 
   @override
-  Future<DetailsSale> updateDetailSale(Map<String, dynamic> detailSaleLike) {
-    // TODO: implement updateDetailSale
-    throw UnimplementedError();
+  Future<DetailsSale> updateDetailSale(
+      Map<String, dynamic> detailSaleLike, String id) async {
+    try {
+      final response =
+          await dio.patch("/sales-products/$id/", data: detailSaleLike);
+
+      final DetailsSale detailSale =
+          DetailSaleMapper.jsonToEntity(response.data);
+
+      return detailSale;
+    } catch (e) {
+      throw Exception();
+    }
   }
 }
