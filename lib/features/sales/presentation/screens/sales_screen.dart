@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intventory/features/sales/presentation/providers/providers.dart';
+import 'package:intventory/features/sales/presentation/widgets/widgets.dart';
 import 'package:intventory/features/shared/shared.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 class SalesScreen extends ConsumerWidget {
   const SalesScreen({super.key});
@@ -47,7 +47,7 @@ class _SalesViewState extends ConsumerState<_SalesView> {
     scrollController.addListener(() {
       if ((scrollController.position.pixels + 100) <=
           scrollController.position.maxScrollExtent) {
-        ref.read(salesProvider.notifier).loadNextPage();
+        ref.watch(salesProvider.notifier).loadNextPage();
       }
     });
   }
@@ -67,43 +67,9 @@ class _SalesViewState extends ConsumerState<_SalesView> {
       controller: scrollController,
       itemBuilder: (context, index) {
         final sale = salesState.sales[index];
-        const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
 
-        return Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Card(
-            child: ListTile(
-              title: Row(
-                children: [
-                  const Text("Fecha: ", style: textStyle),
-                  Text(DateFormat('dd-MM-yyyy:hh:mm:ss')
-                      .format(sale.createdAt!.toLocal())),
-                ],
-              ),
-              subtitle: Row(
-                children: [
-                  const Text("Total: ", style: textStyle),
-                  Text(sale.total.toString()),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  const Text("Estatus: ", style: textStyle),
-                  Text(
-                    sale.isCompleted ? "Completada" : "Incompleta",
-                    style: TextStyle(
-                        color: sale.isCompleted
-                            ? Colors.greenAccent
-                            : Colors.redAccent),
-                  ),
-                  // Text(sale)
-                ],
-              ),
-              onTap: () {
-                context.push("/sales/${sale.id}");
-              },
-              trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-            ),
-          ),
+        return CardSales(
+          sale: sale,
         );
       },
     );
