@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intventory/features/shared/shared.dart';
 
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -20,9 +21,11 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        label: const Text("Agregar Venta"),
-        icon: const Icon(Icons.add),
-        onPressed: () {},
+        label: const Text("Ir a ventas"),
+        icon: const Icon(Icons.store_mall_directory_sharp),
+        onPressed: () {
+          context.push("/sales");
+        },
       ),
       body: const _MyChatView(),
     );
