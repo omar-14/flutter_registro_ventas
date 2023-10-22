@@ -4,7 +4,7 @@ import 'package:intventory/features/inventory/domain/domain.dart';
 
 class DetailsSale {
   String id;
-  int productQuantity;
+  String productQuantity;
   String productId;
   String subTotal;
   String idSale;

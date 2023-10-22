@@ -54,6 +54,14 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
     return detailsSales;
   }
 
+  Future refreshPage() async {
+    state = state.copyWith(offset: 0);
+    salesState.state = salesState.state.copyWith(offset: 0);
+
+    await saleState.loadSale();
+    await salesState.refreshPage();
+  }
+
   Future loadNextPage(String id) async {
     if (id.contains("new")) return;
 
@@ -94,16 +102,18 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
 
       final detailsSales = await getDetailsSales(id);
 
-      saleState.loadSale();
-
+      state = state.copyWith(offset: 0);
       salesState.state = salesState.state.copyWith(offset: 0);
-      salesState.refreshPage();
+
+      await saleState.loadSale();
+      await salesState.refreshPage();
 
       state = state.copyWith(
           isLoading: false,
           offset: state.offset + 10,
           detailsSales: detailsSales);
     } catch (e) {
+      state = state.copyWith(isLoading: false);
       throw Exception();
     }
   }
@@ -120,7 +130,11 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
 
       state.detailsSales.removeWhere((element) => element.id == id);
 
+      await refreshPage();
+
       state = state.copyWith(isLoading: false);
+
+      return isDelete;
     } catch (e) {
       throw Exception();
     }
@@ -145,6 +159,8 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
       throw Exception();
     }
   }
+
+  void onQuantityChanged(int quantity) {}
 }
 
 class DetailsSalesState {

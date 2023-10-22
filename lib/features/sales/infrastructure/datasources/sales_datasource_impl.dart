@@ -13,7 +13,7 @@ class SalesDatasourceImpl extends SalesDatasource {
   @override
   Future<Sale> createSale(Map<String, dynamic> saleLike) async {
     try {
-      final response = await dio.post("/sales/", data: saleLike);
+      final response = await dio.post("/sales", data: saleLike);
 
       final Sale sale = SaleMapper.jsonToEntity(response.data);
 
@@ -50,8 +50,8 @@ class SalesDatasourceImpl extends SalesDatasource {
   @override
   Future<List<Sale>> listSales({int limit = 10, int offset = 0}) async {
     try {
-      final response = await dio
-          .get("/sales", queryParameters: {"limit": limit, "offset": offset});
+      final response = await dio.get("/sales/list",
+          queryParameters: {"limit": limit, "offset": offset});
 
       final List<Sale> sales = [];
 

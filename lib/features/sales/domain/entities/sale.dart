@@ -4,7 +4,8 @@ class Sale {
   String id;
   bool isCompleted;
   String userId;
-  int total;
+  double total;
+  double numberOfProducts;
   DateTime? createdAt;
   User? user;
 
@@ -14,6 +15,7 @@ class Sale {
     required this.userId,
     this.user,
     required this.total,
+    required this.numberOfProducts,
     this.createdAt,
   });
 }
