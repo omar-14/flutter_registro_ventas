@@ -40,12 +40,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
   void registerUser(String email, String password, String fullName) async {}
 
   void checkAuthStatus() async {
-    final token = await keyValueStorageService.getValue<String>("token");
+    final refresh = await keyValueStorageService.getValue<String>("refresh");
 
-    if (token == null) return logout();
+    if (refresh == null) return logout();
 
     try {
-      final user = await authRepository.checkAuthStatus(token);
+      final user = await authRepository.checkAuthStatus(refresh);
       _setLoggedUser(user);
     } catch (e) {
       logout();
@@ -54,12 +54,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void _setLoggedUser(User user) async {
     await keyValueStorageService.setKeyValue("token", user.token);
+    await keyValueStorageService.setKeyValue("refresh", user.refresh);
+
     state = state.copyWith(
         user: user, errorMessage: "", authStatus: AuthStatus.authenticated);
   }
 
   Future<void> logout([String? errorMessage]) async {
     await keyValueStorageService.removeKey("token");
+    await keyValueStorageService.removeKey("refresh");
 
     state = state.copyWith(
         authStatus: AuthStatus.notAuthenticated,

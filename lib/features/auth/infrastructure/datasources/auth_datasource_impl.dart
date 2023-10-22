@@ -8,12 +8,12 @@ class AuthDatasourceImpl extends AuthDatasource {
   final dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
 
   @override
-  Future<User> checkAuthStatus(String token) async {
+  Future<User> checkAuthStatus(String refresh) async {
     try {
-      final response = await dio.get("/auth/check-status",
-          options: Options(headers: {"Authorization": "Bearer $token"}));
+      final response =
+          await dio.post("/auth/refresh/", data: {"refresh": refresh});
 
-      final user = UserMapper.userJsonToEntity(response.data);
+      final user = UserMapper.userJsonToEntityAuth(response.data);
       return user;
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
@@ -30,11 +30,12 @@ class AuthDatasourceImpl extends AuthDatasource {
   }
 
   @override
-  Future<User> login(String email, String password) async {
+  Future<User> login(String username, String password) async {
     try {
-      final resposne = await dio
-          .post("/auth/login", data: {"username": email, "password": password});
-      final user = UserMapper.userJsonToEntity(resposne.data);
+      final resposne = await dio.post("/auth/login/",
+          data: {"username": username, "password": password});
+
+      final user = UserMapper.userJsonToEntityAuth(resposne.data);
       return user;
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
@@ -52,8 +53,24 @@ class AuthDatasourceImpl extends AuthDatasource {
   }
 
   @override
-  Future<User> register(String email, String password, String fullName) {
-    // TODO: implement register
-    throw UnimplementedError();
+  Future<User> register(Map<String, dynamic> likeUser) async {
+    try {
+      final resposne = await dio.post("/auth/register/", data: likeUser);
+
+      final user = UserMapper.userJsonToEntityAuth(resposne.data);
+      return user;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw CustomError(
+            e.response?.data["message"] ?? "Error con el registro");
+      }
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError("Revisar conecxión a internet");
+      }
+
+      throw Exception();
+    } catch (e) {
+      throw Exception();
+    }
   }
 }
