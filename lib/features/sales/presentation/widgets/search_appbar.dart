@@ -6,6 +6,8 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:intventory/features/sales/presentation/widgets/widgets.dart';
 import 'package:intventory/features/sales/presentation/providers/providers.dart';
 
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'delegates/search_product_delegate.dart';
 
 class SearchAppbar extends ConsumerWidget {
@@ -26,6 +28,8 @@ class SearchAppbar extends ConsumerWidget {
 
     final detailProvider = ref.read(detailsSalesProvider(idSale).notifier);
 
+    // final MediaQueryData mediaQueryData = MediaQuery.of(context);
+
     Future<bool> showConfirmDialog() async {
       return await showDialog(
         context: context,
@@ -43,26 +47,33 @@ class SearchAppbar extends ConsumerWidget {
     void showFormAddProduct(product) {
       showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (builder) {
-          return FormAddProduct(
-            product: product,
-            onPressed: () async {
-              final newDetail = {
-                "id_product": product.id,
-                "id_sale": idSale,
-                "sub_total": 31,
-                "product_quantity": 3
-              };
+          return SingleChildScrollView(
+            child: FormAddProduct(
+              product: product,
+              onPressed: () async {
+                final newDetail = {
+                  "id_product": product.id,
+                  "id_sale": idSale,
+                  "sub_total": product.publicPrice,
+                  "product_quantity": "3.0"
+                };
 
-              await detailProvider.createDetailSale(newDetail).then((value) {
-                Navigator.pop(context);
-                print(value);
-                if (value == null) return;
-
-                showSnackbar(context,
-                    value ? "Producto Agregado" : "Producto ya en el carrito");
-              });
-            },
+                await detailProvider.createDetailSale(newDetail).then((value) {
+                  Navigator.pop(context);
+                  if (value == null) return;
+                  showSnackbar(
+                      context,
+                      value
+                          ? "Producto Agregado"
+                          : "Producto ya en el carrito");
+                }).onError((error, stackTrace) {
+                  Navigator.pop(context);
+                  showSnackbar(context, "Error agregando el Producto");
+                });
+              },
+            ),
           );
         },
       );
@@ -89,7 +100,6 @@ class SearchAppbar extends ConsumerWidget {
                               initialProduct: searchMovies))
                       .then((product) {
                     if (product == null) {
-                      showConfirmDialog();
                       return;
                     }
                     showFormAddProduct(product);

@@ -1,3 +1,4 @@
+// import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:intventory/features/auth/domain/domain.dart';
 import 'package:intventory/features/sales/domain/domain.dart';
@@ -8,19 +9,27 @@ final saleProvider =
         (ref, saleId) {
   final salesRepository = ref.watch(salesRepositoryProvider);
 
-  return SaleNotifier(salesRepository: salesRepository, saleId: saleId);
+  final salesState = ref.read(salesProvider.notifier);
+
+  return SaleNotifier(
+      salesRepository: salesRepository, salesState: salesState, saleId: saleId);
 });
 
 class SaleNotifier extends StateNotifier<SaleState> {
   final SalesRepository salesRepository;
+  final SalesNotifier salesState;
 
-  SaleNotifier({required this.salesRepository, required String saleId})
+  SaleNotifier(
+      {required this.salesState,
+      required this.salesRepository,
+      required String saleId})
       : super(SaleState(id: saleId)) {
     loadSale();
   }
 
   Sale newEmptySale() {
-    return Sale(id: "", isCompleted: false, userId: "", total: 0);
+    return Sale(
+        id: "", isCompleted: false, userId: "", total: 0, numberOfProducts: 0);
   }
 
   Future<void> loadSale() async {
@@ -28,6 +37,25 @@ class SaleNotifier extends StateNotifier<SaleState> {
       final sale = await salesRepository.getSaleById(state.id);
 
       state = state.copyWith(isLoading: false, sale: sale);
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  Future updateSale(Map<String, dynamic> saleLike) async {
+    try {
+      if (state.isLoading) return;
+
+      state = state.copyWith(isLoading: true);
+
+      final updateSale = await salesRepository.updateSale(saleLike);
+
+      final index = salesState.state.sales
+          .indexWhere((element) => element.id == state.id);
+
+      salesState.state.sales[index] = updateSale;
+
+      state = state.copyWith(isLoading: false);
     } catch (e) {
       throw Exception();
     }

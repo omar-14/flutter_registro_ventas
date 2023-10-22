@@ -1,18 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intventory/features/auth/presentation/providers/providers.dart';
 import 'package:intventory/features/sales/domain/domain.dart';
 import 'package:intventory/features/sales/presentation/providers/providers.dart';
 
 final salesProvider =
     StateNotifierProvider.autoDispose<SalesNotifier, SalesState>((ref) {
   final salesRepository = ref.watch(salesRepositoryProvider);
+  final authState = ref.read(authProvider);
 
-  return SalesNotifier(salesRepository: salesRepository);
+  return SalesNotifier(salesRepository: salesRepository, authState: authState);
 });
 
 class SalesNotifier extends StateNotifier<SalesState> {
   final SalesRepository salesRepository;
+  final AuthState authState;
 
-  SalesNotifier({required this.salesRepository}) : super(SalesState()) {
+  SalesNotifier({required this.authState, required this.salesRepository})
+      : super(SalesState()) {
     loadNextPage();
   }
 
@@ -59,10 +63,13 @@ class SalesNotifier extends StateNotifier<SalesState> {
   }
 
   Future createSale() async {
+    final user = authState.user!.id;
+
     final emptySale = {
       "is_completed": false,
-      "user": "c2e19368-7e38-4875-9a6f-57b03e17b636",
-      "total": 0
+      "user": user,
+      "total": 0,
+      "number_of_products": 0,
     };
     final newSale = await salesRepository.createSale(emptySale);
 

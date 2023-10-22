@@ -63,14 +63,20 @@ class _SalesViewState extends ConsumerState<_SalesView> {
     final salesState = ref.watch(salesProvider);
 
     return ListView.builder(
-      itemCount: salesState.sales.length,
+      itemCount: salesState.sales.length + 1,
       controller: scrollController,
       itemBuilder: (context, index) {
-        final sale = salesState.sales[index];
+        if (index < salesState.sales.length) {
+          final sale = salesState.sales[index];
 
-        return CardSales(
-          sale: sale,
-        );
+          return CardSales(
+            sale: sale,
+          );
+        } else {
+          // Elemento de relleno que actúa como espacio en blanco
+          return const SizedBox(
+              height: 80.0); // Ajusta la altura según tus necesidades
+        }
       },
     );
   }

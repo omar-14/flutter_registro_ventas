@@ -9,7 +9,8 @@ class CardSales extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
+    const titileStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
+    const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 13);
 
     return Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -17,33 +18,73 @@ class CardSales extends StatelessWidget {
         child: ListTile(
           title: Row(
             children: [
-              const Text("Fecha: ", style: textStyle),
+              const Text("Fecha: ", style: titileStyle),
               Text(DateFormat('dd-MM-yyyy:hh:mm:ss')
                   .format(sale.createdAt!.toLocal())),
             ],
           ),
-          subtitle: Row(
+          subtitle: Column(
             children: [
-              const Text("Total: ", style: textStyle),
-              Text(sale.total.toString()),
-              const SizedBox(
-                width: 20,
+              const SizedBox(height: 3),
+              Row(
+                children: [
+                  const Text("Total: ", style: textStyle),
+                  Text(sale.total.toString()),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  const Text("Items: ", style: textStyle),
+                  Text(sale.numberOfProducts.toString()),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                ],
               ),
-              const Text("Estatus: ", style: textStyle),
-              Text(
-                sale.isCompleted ? "Completada" : "Incompleta",
-                style: TextStyle(
-                    color: sale.isCompleted
-                        ? Colors.greenAccent
-                        : Colors.redAccent),
+              const SizedBox(height: 3),
+              Row(
+                // crossAxisAlignment: CrossAxisAlignment.end,
+                // mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text("Usuario: ", style: textStyle),
+                  // Text(
+                  //     "${sale.user?.firstName ?? ""} ${sale.user?.lastName ?? ""}"),
+                  Text(sale.user?.username ?? ""),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  const Text("Estatus: ", style: titileStyle),
+                  Text(
+                    sale.isCompleted ? "Completada" : "Incompleta",
+                    style: TextStyle(
+                        color: sale.isCompleted
+                            ? Colors.greenAccent
+                            : Colors.redAccent),
+                  ),
+                ],
               ),
-              // Text(sale)
+              // Row(
+              //   crossAxisAlignment: CrossAxisAlignment.end,
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     const Text("Estatus: ", style: titileStyle),
+              //     Text(
+              //       sale.isCompleted ? "Completada" : "Incompleta",
+              //       style: TextStyle(
+              //           color: sale.isCompleted
+              //               ? Colors.greenAccent
+              //               : Colors.redAccent),
+              //     ),
+              //   ],
+              // )
             ],
           ),
           onTap: () {
             context.push("/sales/${sale.id}");
           },
-          trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+          trailing: const Icon(
+            Icons.keyboard_arrow_right_outlined,
+            size: 20,
+          ),
         ),
       ),
     );

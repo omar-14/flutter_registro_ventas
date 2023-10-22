@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-// import 'package:animate_do/animate_do.dart';
 import 'package:intventory/features/inventory/domain/domain.dart';
 
 typedef SearchProductCallBack = Future<List<Product>> Function(String query);
@@ -114,8 +112,8 @@ class _ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme;
-    // final size = MediaQuery.of(context).size;
+    const titileStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
+    const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 13);
 
     return GestureDetector(
       onTap: () {
@@ -125,32 +123,44 @@ class _ProductItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
         child: Column(children: [
           SizedBox(
-            // width: 0.7,
-            child: Row(children: [
-              Text(product.nameProduct, style: textStyle.titleSmall),
-              const SizedBox(width: 20),
-
-              Text(product.brand),
-              const Divider(),
-
-              // Row(
-              //   children: [
-              //     // Icon(
-              //     //   Icons.star_half_outlined,
-              //     //   color: Colors.yellow.shade800,
-              //     // ),
-              //     const SizedBox(
-              //       width: 5,
-              //     ),
-              //     // Text(
-              //     //   HumanFormats.number(movie.voteAverage, 1),
-              //     //   style: textStyle.bodyMedium
-              //     //       ?.copyWith(color: Colors.yellow.shade900),
-              //     // )
-              //   ],
-              // )
-            ]),
-          )
+              // width: 0.7,
+              child: Card(
+            child: ListTile(
+              title: Text(
+                product.nameProduct,
+                style: titileStyle,
+              ),
+              subtitle: Column(children: [
+                const SizedBox(height: 3),
+                Row(
+                  children: [
+                    const Text(
+                      "Marca: ",
+                      style: textStyle,
+                    ),
+                    Text(product.brand),
+                    const SizedBox(width: 10),
+                    const Text(
+                      "Tipo: ",
+                      style: textStyle,
+                    ),
+                    Text(product.productType),
+                    // Text(product.),
+                  ],
+                ),
+                const SizedBox(height: 3),
+                Row(
+                  children: [
+                    const Text(
+                      "SKU: ",
+                      style: textStyle,
+                    ),
+                    Text(product.key.isEmpty ? "N/A" : product.key),
+                  ],
+                )
+              ]),
+            ),
+          ))
         ]),
       ),
     );
