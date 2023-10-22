@@ -1,24 +1,35 @@
 import 'package:intventory/features/inventory/domain/domain.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intventory/features/shared/shared.dart';
 import 'products_repository_provider.dart';
 
 final productProvider = StateNotifierProvider.autoDispose
     .family<ProductNotifier, ProductState, String>((ref, productId) {
   final productsRepository = ref.watch(productsRepositoryProvider);
+  final keyValueStorageService = KeyValueStorageImpl();
 
   return ProductNotifier(
-      productsRepository: productsRepository, productId: productId);
+      productsRepository: productsRepository,
+      productId: productId,
+      keyValueStorageService: keyValueStorageService);
 });
 
 class ProductNotifier extends StateNotifier<ProductState> {
   final ProductsRespository productsRepository;
+  final KeyValueStorage keyValueStorageService;
 
-  ProductNotifier({required this.productsRepository, required String productId})
+  ProductNotifier(
+      {required this.keyValueStorageService,
+      required this.productsRepository,
+      required String productId})
       : super(ProductState(id: productId)) {
     loadProduct();
   }
 
-  Product newEmptyProduct(String key) {
+  Future<Product> newEmptyProduct(String key) async {
+    final String? user =
+        await keyValueStorageService.getValue<String>("userId");
+
     return Product(
       id: "0",
       key: key,
@@ -28,7 +39,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
       originalPrice: "0",
       productProfit: "0",
       stock: 0,
-      createdBy: "c2e19368-7e38-4875-9a6f-57b03e17b636",
+      createdBy: user ?? "",
       isSeasonProduct: false,
       productType: "",
     );
@@ -40,7 +51,8 @@ class ProductNotifier extends StateNotifier<ProductState> {
         final List<String> idSplit = state.id.split("-");
         state = state.copyWith(
             isLoading: false,
-            product: newEmptyProduct(idSplit.length > 1 ? idSplit[1] : ""));
+            product:
+                await newEmptyProduct(idSplit.length > 1 ? idSplit[1] : ""));
         return;
       }
 

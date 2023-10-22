@@ -60,23 +60,76 @@ class _ProductsViewState extends ConsumerState {
       controller: scrollController,
       itemBuilder: (context, index) {
         final product = productsState.products[index];
+        const titileStyle =
+            TextStyle(fontWeight: FontWeight.bold, fontSize: 19);
+        const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
 
         return Padding(
           padding: const EdgeInsets.only(top: 10),
-          child: ListTile(
-            title: Text("Producto: ${product.nameProduct}"),
-            subtitle: Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Marca: ${product.brand}"),
-                      // Text("Precio: ${product.publicUnitPrice}"),
-                      // Text("Unidades: ${product.stock}"),
-                      // Text("Tipo: ${product.productType}"),
-                    ])),
-            trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-            onTap: () => context.push("/product/${product.id}"),
+          child: Card(
+            child: ListTile(
+              title: Text(
+                "Producto: ${product.nameProduct}",
+                style: titileStyle,
+              ),
+              subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              "Marca: ",
+                              style: textStyle,
+                            ),
+                            Text(product.brand),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "Precio: ",
+                              style: textStyle,
+                            ),
+                            Text(product.publicPrice),
+                          ],
+                        ),
+                        const SizedBox(height: 3),
+                        Row(
+                          children: [
+                            const Text(
+                              "Tipo: ",
+                              style: textStyle,
+                            ),
+                            Text(
+                              product.productType,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Text(
+                              "Existencias: ",
+                              style: textStyle,
+                            ),
+                            Text(product.stock.toString(),
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: product.stock > 0
+                                        ? const Color.fromARGB(
+                                            255, 35, 177, 108)
+                                        : Colors.redAccent)),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        ),
+                      ])),
+              trailing: const Icon(Icons.keyboard_arrow_right_outlined),
+              onTap: () => context.push("/product/${product.id}"),
+            ),
           ),
         );
       },
