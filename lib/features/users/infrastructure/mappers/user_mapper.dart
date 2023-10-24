@@ -1,12 +1,11 @@
-// import 'package:intventory/features/auth/domain/domain.dart';
+import 'package:intventory/features/users/domain/domain.dart';
 
-// class UserMapper {
-//   static jsonToEntity(Map<String, dynamic> json) => User(
-//       id: json["id"],
-//       username: json["username"],
-//       firstName: json["firstName"],
-//       lastName: json["lastName"],
-//       email: json["email"],
-//       token: json["token"],
-//       refresh: json["refresh"]);
-// }
+class UserMapper {
+  static jsonToEntity(Map<String, dynamic> json) => User(
+      id: json["id"],
+      username: json["username"],
+      fistName: json["first_name"],
+      lastName: json["last_name"],
+      email: json["email"],
+      role: json["role"]);
+}

@@ -6,6 +6,7 @@ class User {
   String id;
   String role;
   String email;
+  String? password;
 
   User({
     required this.username,
@@ -14,5 +15,6 @@ class User {
     required this.id,
     required this.role,
     required this.email,
+    this.password,
   });
 }
