@@ -11,6 +11,7 @@ import 'package:intventory/features/configurations/presentations/screens/configu
 import 'package:intventory/features/home/presentation/screens/home_screen.dart';
 import 'package:intventory/features/shared/widgets/qr_generator.dart';
 import 'package:intventory/features/recommendations/presentations/screens/recommendations_screen.dart';
+import 'package:intventory/features/users/presentation/screens/user_screen.dart';
 
 import 'app_router_notifier.dart';
 
@@ -62,6 +63,11 @@ final goRouterProvider = Provider((ref) {
       GoRoute(
         path: "/users",
         builder: (context, state) => const UsersScreen(),
+      ),
+      GoRoute(
+        path: "/users/:id",
+        builder: (context, state) =>
+            UserScreen(idUser: state.pathParameters["id"] ?? "no-id"),
       ),
       GoRoute(
         path: "/configs",
