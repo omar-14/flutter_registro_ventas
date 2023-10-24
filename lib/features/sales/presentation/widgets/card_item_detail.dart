@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intventory/features/inventory/domain/domain.dart';
 import 'package:intventory/features/sales/domain/domain.dart';
-// import 'package:intventory/features/sales/presentation/widgets/widgets.dart';
 
 class CardItemDetail extends StatelessWidget {
-  final Product? product;
+  final Product product;
   final DetailsSale detail;
+  final void Function()? onTap;
   const CardItemDetail(
-      {super.key, required this.product, required this.detail});
+      {super.key,
+      required this.product,
+      required this.detail,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -17,19 +20,7 @@ class CardItemDetail extends StatelessWidget {
       child: Card(
         color: Colors.indigo[300],
         child: ListTile(
-          onTap: () {
-            // showModalBottomSheet(
-            //   context: context,
-            //   builder: (builder) {
-            //     return FormAddProduct(
-            //       product: product,
-            //       onPressed: () {
-            //         Navigator.pop(context);
-            //       },
-            //     );
-            //   },
-            // );
-          },
+          onTap: onTap,
           trailing: const Icon(
             Icons.arrow_forward_ios_outlined,
             color: Colors.black,
@@ -39,7 +30,7 @@ class CardItemDetail extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${product?.nameProduct ?? ""} - ${product?.brand ?? ""}",
+                  "${product.nameProduct} - ${product.brand}",
                   style: textStyle,
                 ),
               ),
@@ -59,7 +50,7 @@ class CardItemDetail extends StatelessWidget {
                     "Cantidad: ",
                     style: textStyle,
                   ),
-                  Text(detail.productQuantity.toString()),
+                  Text(detail.productQuantity.toString().split(".")[0]),
                 ],
               ),
             ],

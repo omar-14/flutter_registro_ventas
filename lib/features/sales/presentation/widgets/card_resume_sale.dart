@@ -41,7 +41,7 @@ class CardResumeSale extends StatelessWidget {
               width: 1,
             ),
             Text(
-              totalItems,
+              totalItems.split(".")[0],
               style: textStyle,
             ),
           ],

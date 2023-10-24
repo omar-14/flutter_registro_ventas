@@ -26,10 +26,6 @@ class SearchAppbar extends ConsumerWidget {
     final colors = Theme.of(context).colorScheme;
     final titleStyle = Theme.of(context).textTheme.titleSmall;
 
-    final detailProvider = ref.read(detailsSalesProvider(idSale).notifier);
-
-    // final MediaQueryData mediaQueryData = MediaQuery.of(context);
-
     Future<bool> showConfirmDialog() async {
       return await showDialog(
         context: context,
@@ -52,17 +48,16 @@ class SearchAppbar extends ConsumerWidget {
           return SingleChildScrollView(
             child: FormAddProduct(
               product: product,
+              idSale: idSale,
               onPressed: () async {
-                final newDetail = {
-                  "id_product": product.id,
-                  "id_sale": idSale,
-                  "sub_total": product.publicPrice,
-                  "product_quantity": "3.0"
-                };
-
-                await detailProvider.createDetailSale(newDetail).then((value) {
+                ref
+                    .read(detailSaleCreateFormProvider(idSale).notifier)
+                    .onFormSubmit(product)
+                    .then((value) {
                   Navigator.pop(context);
-                  if (value == null) return;
+                  if (!value) {
+                    return null;
+                  }
                   showSnackbar(
                       context,
                       value

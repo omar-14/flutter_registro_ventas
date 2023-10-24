@@ -34,7 +34,7 @@ class CardSales extends StatelessWidget {
                     width: 25,
                   ),
                   const Text("Items: ", style: textStyle),
-                  Text(sale.numberOfProducts.toString()),
+                  Text(sale.numberOfProducts.toString().split(".")[0]),
                   const SizedBox(
                     width: 25,
                   ),
@@ -42,8 +42,6 @@ class CardSales extends StatelessWidget {
               ),
               const SizedBox(height: 3),
               Row(
-                // crossAxisAlignment: CrossAxisAlignment.end,
-                // mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const Text("Usuario: ", style: textStyle),
                   // Text(

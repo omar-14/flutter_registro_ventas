@@ -4,8 +4,8 @@ import 'package:intventory/features/inventory/presentation/providers/providers.d
 import 'package:intventory/features/sales/domain/domain.dart';
 import 'package:intventory/features/sales/presentation/providers/providers.dart';
 
-final detailsSalesProvider = StateNotifierProvider.autoDispose
-    .family<DetailsSalesNotifier, DetailsSalesState, String>((ref, id) {
+final detailsSalesProvider = StateNotifierProvider.family<DetailsSalesNotifier,
+    DetailsSalesState, String>((ref, id) {
   final detailsSalesRepository = ref.watch(detailsSalesRepositoryProvider);
   final productsRepository = ref.watch(productsRepositoryProvider);
   final saleState = ref.watch(saleProvider(id).notifier);
@@ -90,17 +90,13 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
 
       state = state.copyWith(isLoading: true);
 
-      final isCreated =
+      final newDetailSale =
           await detailsSalesRepository.createDetailSale(detailSaleLike);
 
-      if (!isCreated) {
-        state = state.copyWith(isLoading: false);
-        return false;
-      }
+      final product =
+          await productsRepository.getProductById(newDetailSale.productId);
 
-      state = state.copyWith(offset: 0);
-
-      final detailsSales = await getDetailsSales(id);
+      newDetailSale.product = product;
 
       state = state.copyWith(offset: 0);
       salesState.state = salesState.state.copyWith(offset: 0);
@@ -111,7 +107,7 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
       state = state.copyWith(
           isLoading: false,
           offset: state.offset + 10,
-          detailsSales: detailsSales);
+          detailsSales: [newDetailSale, ...state.detailsSales]);
     } catch (e) {
       state = state.copyWith(isLoading: false);
       throw Exception();
@@ -140,21 +136,26 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
     }
   }
 
-  Future updateQuantityDetailProduct(int quantity, String id) async {
+  Future updateQuantityDetailProduct(double quantity, String detailId) async {
     try {
       if (state.isLoading) return;
 
       state = state.copyWith(isLoading: true);
 
       final updateDetailProduct = await detailsSalesRepository
-          .updateDetailSale({"product_quantity": quantity}, id);
+          .updateDetailSale({"product_quantity": quantity}, detailId);
 
-      state = state.copyWith(isLoading: false);
+      final product = await productsRepository
+          .getProductById(updateDetailProduct.productId);
+
+      updateDetailProduct.product = product;
 
       final index =
-          state.detailsSales.indexWhere((element) => element.id == id);
+          state.detailsSales.indexWhere((element) => element.id == detailId);
 
       state.detailsSales[index] = updateDetailProduct;
+
+      state = state.copyWith(isLoading: false);
     } catch (e) {
       throw Exception();
     }

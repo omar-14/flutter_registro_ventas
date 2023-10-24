@@ -157,6 +157,16 @@ class _ProductItem extends StatelessWidget {
                     ),
                     Text(product.key.isEmpty ? "N/A" : product.key),
                   ],
+                ),
+                const SizedBox(height: 3),
+                Row(
+                  children: [
+                    const Text(
+                      "Existencias: ",
+                      style: textStyle,
+                    ),
+                    Text(product.stock.toString()),
+                  ],
                 )
               ]),
             ),

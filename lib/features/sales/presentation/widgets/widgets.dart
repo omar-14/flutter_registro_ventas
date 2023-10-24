@@ -5,4 +5,6 @@ export 'card_item_detail.dart';
 export 'custom_progres_indicator.dart';
 export 'custom_dialog.dart';
 export 'form_add_product.dart';
+export 'form_update_product.dart';
 export 'card_sales.dart';
+export 'form_product.dart';

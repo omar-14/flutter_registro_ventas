@@ -3,8 +3,7 @@ import 'package:intventory/features/auth/presentation/providers/providers.dart';
 import 'package:intventory/features/sales/domain/domain.dart';
 import 'package:intventory/features/sales/presentation/providers/providers.dart';
 
-final salesProvider =
-    StateNotifierProvider.autoDispose<SalesNotifier, SalesState>((ref) {
+final salesProvider = StateNotifierProvider<SalesNotifier, SalesState>((ref) {
   final salesRepository = ref.watch(salesRepositoryProvider);
   final authState = ref.read(authProvider);
 
