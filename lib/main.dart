@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intventory/config/config.dart';
 import 'package:intventory/config/constants/environments.dart';
+import 'package:intventory/config/theme/theme_provider.dart';
 
 void main() async {
   await Environment.initEnvironment();
@@ -15,11 +16,12 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(goRouterProvider);
+    final AppTheme appTheme = ref.watch(themeNotifierProvider);
 
     return MaterialApp.router(
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
-      theme: AppTheme().getTheme(),
+      theme: appTheme.getTheme(),
     );
   }
 }

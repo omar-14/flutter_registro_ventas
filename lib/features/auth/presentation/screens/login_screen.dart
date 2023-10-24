@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:intventory/config/theme/theme_provider.dart';
+// import 'package:go_router/go_router.dart';
 import 'package:intventory/features/auth/presentation/providers/auth_provider.dart';
 import 'package:intventory/features/auth/presentation/providers/login_form_provider.dart';
 import 'package:intventory/features/shared/shared.dart';
@@ -25,8 +26,8 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 80),
             // Icon Banner
             const Icon(
-              Icons.production_quantity_limits_rounded,
-              color: Colors.white,
+              Icons.inventory_2_outlined,
+              color: Color.fromARGB(255, 224, 216, 216),
               size: 100,
             ),
             const SizedBox(height: 80),
@@ -54,6 +55,7 @@ class _LoginForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loginForm = ref.watch(loginFormProvider);
+    final isDarkmode = ref.watch(themeNotifierProvider).isDarkmode;
 
     ref.listen(authProvider, (previous, next) {
       if (next.errorMessage.isEmpty) return;
@@ -92,22 +94,11 @@ class _LoginForm extends ConsumerWidget {
               height: 50,
               child: CustomFilledButton(
                 text: 'Ingresar',
-                buttonColor: Colors.black,
+                buttonColor: isDarkmode ? Colors.white70 : Colors.black,
                 onPressed: loginForm.isPosting
                     ? null
                     : ref.read(loginFormProvider.notifier).onFormSubmit,
               )),
-          const Spacer(flex: 2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('¿No tienes cuenta?'),
-              TextButton(
-                  onPressed: () => context.push('/register'),
-                  child: const Text('Crea una aquí'))
-            ],
-          ),
-          const Spacer(flex: 1),
         ],
       ),
     );

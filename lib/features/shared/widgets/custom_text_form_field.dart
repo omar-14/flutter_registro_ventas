@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intventory/config/theme/theme_provider.dart';
 
-class CustomTextFormField extends StatelessWidget {
+class CustomTextFormField extends ConsumerWidget {
   final String? label;
   final String? hint;
   final String? errorMessage;
@@ -23,7 +25,9 @@ class CustomTextFormField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkmode = ref.watch(themeNotifierProvider).isDarkmode;
+
     final colors = Theme.of(context).colorScheme;
 
     final border = OutlineInputBorder(
@@ -35,7 +39,7 @@ class CustomTextFormField extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(bottom: 0, top: 15),
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDarkmode ? const Color.fromARGB(97, 0, 0, 0) : Colors.white,
           borderRadius: const BorderRadius.only(
               topLeft: borderRadius,
               bottomLeft: borderRadius,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intventory/config/theme/theme_provider.dart';
 
-class CustomProductField extends StatelessWidget {
+class CustomProductField extends ConsumerWidget {
   final bool isTopField; // La idea es que tenga bordes redondeados arriba
   final bool isBottomField; // La idea es que tenga bordes redondeados abajo
   final String? label;
@@ -31,11 +33,14 @@ class CustomProductField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkmode = ref.watch(themeNotifierProvider).isDarkmode;
+
     final colors = Theme.of(context).colorScheme;
 
     final border = OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.transparent),
+        borderSide:
+            BorderSide(color: isDarkmode ? Colors.white : Colors.transparent),
         borderRadius: BorderRadius.circular(40));
 
     const borderRadius = Radius.circular(15);
@@ -43,7 +48,7 @@ class CustomProductField extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDarkmode ? const Color.fromARGB(93, 0, 0, 0) : Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: isTopField ? borderRadius : Radius.zero,
             topRight: isTopField ? borderRadius : Radius.zero,
@@ -53,7 +58,9 @@ class CustomProductField extends StatelessWidget {
           boxShadow: [
             if (isBottomField)
               BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: isDarkmode
+                      ? Colors.white.withOpacity(0.06)
+                      : Colors.black.withOpacity(0.06),
                   blurRadius: 5,
                   offset: const Offset(0, 3))
           ]),
@@ -63,15 +70,18 @@ class CustomProductField extends StatelessWidget {
         validator: validator,
         obscureText: obscureText,
         keyboardType: keyboardType,
-        style: const TextStyle(fontSize: 15, color: Colors.black54),
+        style: TextStyle(
+            fontSize: 20, color: isDarkmode ? Colors.white : Colors.black54),
         maxLines: maxLines,
         initialValue: initialValue,
         decoration: InputDecoration(
           floatingLabelBehavior: maxLines > 1
               ? FloatingLabelBehavior.always
               : FloatingLabelBehavior.auto,
-          floatingLabelStyle: const TextStyle(
-              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
+          floatingLabelStyle: TextStyle(
+              color: isDarkmode ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 18),
           enabledBorder: border,
           focusedBorder: border,
           errorBorder: border.copyWith(
