@@ -1,25 +1,25 @@
+import 'package:intventory/features/auth/presentation/providers/providers.dart';
 import 'package:intventory/features/inventory/domain/domain.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intventory/features/shared/shared.dart';
 import 'products_repository_provider.dart';
 
 final productProvider = StateNotifierProvider.autoDispose
     .family<ProductNotifier, ProductState, String>((ref, productId) {
   final productsRepository = ref.watch(productsRepositoryProvider);
-  final keyValueStorageService = KeyValueStorageImpl();
+  final authState = ref.read(authProvider);
 
   return ProductNotifier(
       productsRepository: productsRepository,
       productId: productId,
-      keyValueStorageService: keyValueStorageService);
+      authState: authState);
 });
 
 class ProductNotifier extends StateNotifier<ProductState> {
   final ProductsRespository productsRepository;
-  final KeyValueStorage keyValueStorageService;
+  final AuthState authState;
 
   ProductNotifier(
-      {required this.keyValueStorageService,
+      {required this.authState,
       required this.productsRepository,
       required String productId})
       : super(ProductState(id: productId)) {
@@ -27,8 +27,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
   }
 
   Future<Product> newEmptyProduct(String key) async {
-    final String? user =
-        await keyValueStorageService.getValue<String>("userId");
+    final user = authState.user!.id;
 
     return Product(
       id: "0",
