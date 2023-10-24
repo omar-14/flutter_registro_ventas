@@ -4,12 +4,12 @@ import 'package:formz/formz.dart';
 enum KeyError { empty, format }
 
 // Extend FormzInput and provide the input type and error type.
-class Key extends FormzInput<String, KeyError> {
+class KeyCode extends FormzInput<String, KeyError> {
   // Call super.pure to represent an unmodified form input.
-  const Key.pure() : super.pure('');
+  const KeyCode.pure() : super.pure('');
 
   // Call super.dirty to represent a modified form input.
-  const Key.dirty(String value) : super.dirty(value);
+  const KeyCode.dirty(String value) : super.dirty(value);
 
   String? get errorMessage {
     if (isValid || isPure) return null;

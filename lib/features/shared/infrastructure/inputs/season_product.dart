@@ -14,8 +14,9 @@ class SeasonProduct extends FormzInput<String, SeasonProductError> {
   String? get errorMessage {
     if (isValid || isPure) return null;
 
-    if (displayError == SeasonProductError.empty)
+    if (displayError == SeasonProductError.empty) {
       return 'El campo es requerido';
+    }
 
     return null;
   }
