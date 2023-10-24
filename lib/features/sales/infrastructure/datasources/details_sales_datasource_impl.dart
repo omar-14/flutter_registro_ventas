@@ -11,11 +11,15 @@ class DetailsSalesDatasourceImpl extends DetailsSalesDatasource {
       : dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
 
   @override
-  Future<bool> createDetailSale(Map<String, dynamic> detailSaleLike) async {
+  Future<DetailsSale> createDetailSale(
+      Map<String, dynamic> detailSaleLike) async {
     try {
       final response = await dio.post("/sales-products", data: detailSaleLike);
 
-      return response.statusCode == 201;
+      final DetailsSale detailSale =
+          DetailSaleMapper.jsonToEntity(response.data);
+
+      return detailSale;
     } catch (e) {
       throw Exception();
     }

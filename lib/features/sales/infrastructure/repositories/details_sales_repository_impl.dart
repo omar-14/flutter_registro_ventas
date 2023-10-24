@@ -7,7 +7,7 @@ class DetailsSalesRepositoryImpl extends DetailsSalesRepository {
   DetailsSalesRepositoryImpl(this.datasource);
 
   @override
-  Future<bool> createDetailSale(Map<String, dynamic> detailSaleLike) {
+  Future<DetailsSale> createDetailSale(Map<String, dynamic> detailSaleLike) {
     return datasource.createDetailSale(detailSaleLike);
   }
 
