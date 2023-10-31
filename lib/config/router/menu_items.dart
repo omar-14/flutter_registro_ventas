@@ -13,7 +13,7 @@ class MenuItem {
       required this.icon});
 }
 
-const appMenuItems = <MenuItem>[
+const appAdminMenuItems = <MenuItem>[
   MenuItem(
       title: "Dahsboard",
       subtitle: "Vista de graficas",
@@ -39,6 +39,24 @@ const appMenuItems = <MenuItem>[
       subtitle: "Vista de usuarios",
       link: "/users",
       icon: Icons.people_outline),
+  MenuItem(
+      title: "Configuraciones",
+      subtitle: "Vista de configuraciones",
+      link: "/configs",
+      icon: Icons.settings)
+];
+
+const appVentasMenuItems = <MenuItem>[
+  MenuItem(
+      title: "Dahsboard",
+      subtitle: "Vista de graficas",
+      link: "/",
+      icon: Icons.home_outlined),
+  MenuItem(
+      title: "Ventas",
+      subtitle: "Vista de ventas",
+      link: "/sales",
+      icon: Icons.shopping_cart_outlined),
   MenuItem(
       title: "Configuraciones",
       subtitle: "Vista de configuraciones",

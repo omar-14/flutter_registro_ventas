@@ -43,6 +43,11 @@ final goRouterProvider = Provider((ref) {
             DetailsSaleScreen(idSale: state.pathParameters["id"] ?? "no-id"),
       ),
       GoRoute(
+        path: "/sales/:id/final",
+        builder: (context, state) =>
+            FinalSaleScreen(idSale: state.pathParameters["id"] ?? "no-id"),
+      ),
+      GoRoute(
         path: "/recommendations",
         builder: (context, state) => const RecommendationsScreen(),
       ),
@@ -51,9 +56,10 @@ final goRouterProvider = Provider((ref) {
         builder: (context, state) => const InventoryScreen(),
       ),
       GoRoute(
-        path: "/qr/:key",
-        builder: (context, state) =>
-            QRGenerator(keyProduct: state.pathParameters["key"] ?? "no-key"),
+        path: "/qr/:key/:id",
+        builder: (context, state) => QRGenerator(
+            keyProduct: state.pathParameters["key"] ?? "no-key",
+            idProduct: state.pathParameters["id"] ?? "no-id"),
       ),
       GoRoute(
         path: "/product/:id",
