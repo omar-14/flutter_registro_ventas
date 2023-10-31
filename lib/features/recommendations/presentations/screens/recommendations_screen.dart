@@ -50,7 +50,7 @@ class RecommendationsScreen extends StatelessWidget {
                           height: 5,
                         ),
                         Text(
-                          "Costo aproximaod del totoal de la sugerencia: ",
+                          "Costo aproximado del total de la sugerencia: ",
                           style: titileStyle,
                         ),
                         Text(

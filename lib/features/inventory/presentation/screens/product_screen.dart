@@ -205,7 +205,7 @@ class _ProductFormView extends ConsumerWidget {
           errorMessage: productForm.brand.errorMessage,
         ),
         CustomProductField(
-          label: 'Precio Original',
+          label: 'Costo',
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           initialValue: product.originalPrice.toString(),
           onChanged: ref
