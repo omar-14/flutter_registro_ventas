@@ -61,6 +61,16 @@ class FormUpdateProduct extends ConsumerWidget {
                     Text(product.nameProduct, style: textStyleContain)
                   ],
                 ),
+                Row(
+                  children: [
+                    const Text(
+                      "Existencias: ",
+                      style: textStyleLabel,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(product.stock.toString(), style: textStyleContain)
+                  ],
+                ),
                 const SizedBox(height: 10),
                 CustomProductField(
                   isTopField: true,

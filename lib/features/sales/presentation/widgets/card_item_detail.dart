@@ -15,6 +15,7 @@ class CardItemDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
+    const textSKUStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 10);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
       child: Card(
@@ -34,6 +35,20 @@ class CardItemDetail extends StatelessWidget {
                   style: textStyle,
                 ),
               ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  product.productType,
+                  style: textStyle,
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  product.key.isEmpty ? "N/A" : product.key,
+                  style: textSKUStyle,
+                ),
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -41,7 +56,7 @@ class CardItemDetail extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   const Text(
-                    "Subtotal: ",
+                    "Precio unitario: ",
                     style: textStyle,
                   ),
                   Text(detail.subTotal),
@@ -51,6 +66,18 @@ class CardItemDetail extends StatelessWidget {
                     style: textStyle,
                   ),
                   Text(detail.productQuantity.toString().split(".")[0]),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text(
+                    "Subtotal: ",
+                    style: textStyle,
+                  ),
+                  Text(
+                      "${double.parse(detail.subTotal) * double.parse(detail.productQuantity)}"),
                 ],
               ),
             ],

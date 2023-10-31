@@ -19,8 +19,12 @@ class CardSales extends StatelessWidget {
           title: Row(
             children: [
               const Text("Fecha: ", style: titileStyle),
-              Text(DateFormat('dd-MM-yyyy:hh:mm:ss')
-                  .format(sale.createdAt!.toLocal())),
+              Text(DateFormat('dd-MM-yyyy').format(sale.createdAt!.toLocal())),
+              const SizedBox(
+                width: 10,
+              ),
+              const Text("Hora: ", style: titileStyle),
+              Text(DateFormat('HH:mm').format(sale.createdAt!.toLocal())),
             ],
           ),
           subtitle: Column(
@@ -48,7 +52,7 @@ class CardSales extends StatelessWidget {
                   //     "${sale.user?.firstName ?? ""} ${sale.user?.lastName ?? ""}"),
                   Text(sale.user?.username ?? ""),
                   const SizedBox(
-                    width: 30,
+                    width: 15,
                   ),
                   const Text("Estatus: ", style: titileStyle),
                   Text(
