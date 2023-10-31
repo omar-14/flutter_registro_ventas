@@ -5,6 +5,8 @@ class Environment {
     await dotenv.load(fileName: ".env");
   }
 
-  static String apiUrl =
-      dotenv.env["API_URL"] ?? "No esta configurado el API_URL";
+  // static String apiUrl =
+  // dotenv.env["API_URL"] ?? "No esta configurado el API_URL";
+
+  static String apiUrl = "https://api-papeleria-ngljvft2vq-uc.a.run.app/api/v1";
 }
