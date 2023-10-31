@@ -15,6 +15,27 @@ class UsersNotifier extends StateNotifier<UsersState> {
     loadNextPage();
   }
 
+  Future refreshPage() async {
+    if (state.isLoading) return;
+
+    state = state.copyWith(isLoading: true, offset: 0);
+
+    final users = await usersRepository.listUsers(
+        limit: state.limit, offset: state.offset);
+
+    if (users.isEmpty) {
+      state = state.copyWith(isLoading: false);
+
+      return;
+    }
+
+    state = state.copyWith(
+        isLastPage: false,
+        isLoading: false,
+        offset: state.offset + 10,
+        users: users);
+  }
+
   Future loadNextPage() async {
     if (state.isLoading || state.isLastPage) return;
 

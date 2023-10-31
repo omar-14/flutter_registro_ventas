@@ -44,7 +44,7 @@ class _ListUsersState extends ConsumerState<_ListUsers> {
     scrollController.addListener(() {
       if ((scrollController.position.pixels + 100) <=
           scrollController.position.maxScrollExtent) {
-        ref.watch(usersProvider.notifier).loadNextPage();
+        // ref.watch(usersProvider.notifier).loadNextPage();
       }
     });
     super.initState();
@@ -69,6 +69,13 @@ class _ListUsersState extends ConsumerState<_ListUsers> {
     );
   }
 
+  Future<void> onRefresh() async {
+    setState(() {});
+    await Future.delayed(const Duration(seconds: 2));
+
+    ref.watch(usersProvider.notifier).refreshPage();
+  }
+
   @override
   Widget build(BuildContext context) {
     final usersState = ref.watch(usersProvider);
@@ -77,96 +84,101 @@ class _ListUsersState extends ConsumerState<_ListUsers> {
     const nameStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 17);
     const textStyle = TextStyle(fontSize: 14);
 
-    return ListView.builder(
-      itemCount: usersState.users.length,
-      controller: scrollController,
-      itemBuilder: (context, index) {
-        final user = usersState.users[index];
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView.builder(
+          itemCount: usersState.users.length + 1,
+          controller: scrollController,
+          itemBuilder: (context, index) {
+            if (index < usersState.users.length) {
+              final user = usersState.users[index];
 
-        return Dismissible(
-          key: Key(usersState.users[index].id),
-          direction: DismissDirection.startToEnd,
-          background: Container(
-            color: Colors.green,
-            alignment: Alignment.centerRight,
-            child: const Icon(Icons.check, color: Colors.transparent),
-          ),
-          confirmDismiss: (DismissDirection direction) async {
-            final isDelete = await showDialogOfConfirmation(context);
+              return Dismissible(
+                key: Key(usersState.users[index].id),
+                direction: DismissDirection.startToEnd,
+                background: Container(
+                  color: Colors.green,
+                  alignment: Alignment.centerRight,
+                  child: const Icon(Icons.check, color: Colors.transparent),
+                ),
+                confirmDismiss: (DismissDirection direction) async {
+                  final isDelete = await showDialogOfConfirmation(context);
 
-            if (!isDelete) {
-              return isDelete;
-            }
+                  if (!isDelete) {
+                    return isDelete;
+                  }
 
-            return await ref.read(usersProvider.notifier).deleteUser(user.id);
-          },
-          onDismissed: (direction) {
-            if (direction == DismissDirection.startToEnd) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Producto eliminado.'),
-              ));
-            }
-          },
-          child: Card(
-            child: ListTile(
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                context.push("/users/${user.id}");
-              },
-              title: Text(
-                "${user.fistName} ${user.lastName}",
-                style: titileStyle,
-              ),
-              subtitle: Column(
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        "username: ",
-                        style: nameStyle,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        user.username,
-                        style: textStyle,
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        "Rol: ",
-                        style: nameStyle,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        user.role,
-                        style: textStyle,
-                      )
-                    ],
+                  return await ref
+                      .read(usersProvider.notifier)
+                      .deleteUser(user.id);
+                },
+                onDismissed: (direction) {
+                  if (direction == DismissDirection.startToEnd) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Producto eliminado.'),
+                    ));
+                  }
+                },
+                child: Card(
+                  child: ListTile(
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      context.push("/users/${user.id}");
+                    },
+                    title: Text(
+                      "${user.fistName} ${user.lastName}",
+                      style: titileStyle,
+                    ),
+                    subtitle: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              "username: ",
+                              style: nameStyle,
+                            ),
+                            Text(
+                              user.username,
+                              style: textStyle,
+                            ),
+                            const SizedBox(width: 10),
+                            const Text(
+                              "Rol: ",
+                              style: nameStyle,
+                            ),
+                            Text(
+                              user.role,
+                              style: textStyle,
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Email: ",
+                              style: nameStyle,
+                            ),
+                            Text(
+                              user.email,
+                              style: textStyle,
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      const Text(
-                        "Email: ",
-                        style: nameStyle,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        user.email,
-                        style: textStyle,
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+                ),
+              );
+            } else {
+              // Elemento de relleno que actúa como espacio en blanco
+              return const SizedBox(
+                  height: 400.0); // Ajusta la altura según tus necesidades
+            }
+          },
+        ),
+      ),
     );
   }
 }
