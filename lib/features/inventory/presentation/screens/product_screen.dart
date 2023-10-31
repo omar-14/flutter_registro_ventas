@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intventory/features/inventory/domain/domain.dart';
-import 'package:intventory/features/inventory/presentation/providers/form/product_form_provider.dart';
+// import 'package:intventory/features/inventory/presentation/providers/form/product_form_provider.dart';
 import 'package:intventory/features/inventory/presentation/widgets/widgets.dart';
 import 'package:intventory/features/shared/widgets/widgets.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 
 import '../providers/providers.dart';
 
@@ -95,9 +95,11 @@ class ProductScreen extends ConsumerWidget {
         children: [
           FloatingActionButton.extended(
               onPressed: () {
-                const uuid = Uuid();
+                ref.read(productProvider(idProduct).notifier).getIdQr();
 
-                context.push("/qr/${uuid.v4()}");
+                final idQr = ref.read(productProvider(idProduct)).idQr;
+
+                context.push("/qr/$idQr/${productState.id}");
                 // context.push("/qr");
               },
               label: const Text("Generar QR"),

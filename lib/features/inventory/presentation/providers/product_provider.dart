@@ -2,6 +2,9 @@ import 'package:intventory/features/auth/presentation/providers/providers.dart';
 import 'package:intventory/features/inventory/domain/domain.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'products_repository_provider.dart';
+import 'package:uuid/uuid.dart';
+
+final productQrIdProvider = StateProvider((ref) => "");
 
 final productProvider = StateNotifierProvider.autoDispose
     .family<ProductNotifier, ProductState, String>((ref, productId) {
@@ -62,16 +65,26 @@ class ProductNotifier extends StateNotifier<ProductState> {
       throw Exception();
     }
   }
+
+  Future getIdQr() async {
+    try {
+      state = state.copyWith(idQr: const Uuid().v4());
+    } catch (e) {
+      throw Exception();
+    }
+  }
 }
 
 class ProductState {
   final String id;
+  final String idQr;
   final Product? product;
   final bool isLoading;
   final bool isSaving;
 
   ProductState({
     required this.id,
+    this.idQr = "",
     this.product,
     this.isLoading = true,
     this.isSaving = false,
@@ -79,12 +92,14 @@ class ProductState {
 
   ProductState copyWith({
     String? id,
+    String? idQr,
     Product? product,
     bool? isLoading,
     bool? isSaving,
   }) =>
       ProductState(
         id: id ?? this.id,
+        idQr: idQr ?? this.idQr,
         product: product ?? this.product,
         isLoading: isLoading ?? this.isLoading,
         isSaving: isSaving ?? this.isSaving,

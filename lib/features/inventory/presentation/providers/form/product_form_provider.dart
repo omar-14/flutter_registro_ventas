@@ -118,7 +118,6 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   }
 
   void onPriceChanged(String value) {
-    print(value);
     state = state.copyWith(
         publicPrice: Price.dirty(value),
         isFormValid: Formz.validate([

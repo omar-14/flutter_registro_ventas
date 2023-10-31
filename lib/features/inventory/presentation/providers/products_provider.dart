@@ -48,6 +48,27 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
     }
   }
 
+  Future refreshPage() async {
+    if (state.isLoading || state.isLastPage) return;
+
+    state = state.copyWith(isLoading: true, offset: 0);
+
+    final products = await productsRepository.getProductsByPage(
+        limit: state.limit, offset: state.offset);
+
+    if (products.isEmpty) {
+      state = state.copyWith(isLoading: false, isLastPage: true);
+
+      return;
+    }
+
+    state = state.copyWith(
+        isLastPage: false,
+        isLoading: false,
+        offset: state.offset + 50,
+        products: products);
+  }
+
   Future loadNextPage() async {
     if (state.isLoading || state.isLastPage) return;
 
@@ -65,7 +86,7 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
     state = state.copyWith(
         isLastPage: false,
         isLoading: false,
-        offset: state.offset + 10,
+        offset: state.offset + 50,
         products: [...state.products, ...products]);
   }
 }
@@ -79,7 +100,7 @@ class ProductsState {
 
   ProductsState(
       {this.isLastPage = false,
-      this.limit = 10,
+      this.limit = 50,
       this.offset = 0,
       this.isLoading = false,
       this.products = const []});
