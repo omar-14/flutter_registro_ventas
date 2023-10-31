@@ -114,6 +114,7 @@ class _ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     const titileStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
     const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 13);
+    const textSKUStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 10);
 
     return GestureDetector(
       onTap: () {
@@ -139,13 +140,17 @@ class _ProductItem extends StatelessWidget {
                       style: textStyle,
                     ),
                     Text(product.brand),
-                    const SizedBox(width: 10),
+                    // Text(product.),
+                  ],
+                ),
+                const SizedBox(width: 10),
+                Row(
+                  children: [
                     const Text(
                       "Tipo: ",
                       style: textStyle,
                     ),
                     Text(product.productType),
-                    // Text(product.),
                   ],
                 ),
                 const SizedBox(height: 3),
@@ -153,9 +158,12 @@ class _ProductItem extends StatelessWidget {
                   children: [
                     const Text(
                       "SKU: ",
-                      style: textStyle,
+                      style: textSKUStyle,
                     ),
-                    Text(product.key.isEmpty ? "N/A" : product.key),
+                    Text(
+                      product.key.isEmpty ? "N/A" : product.key,
+                      style: textSKUStyle,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 3),

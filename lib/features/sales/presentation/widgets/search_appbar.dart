@@ -24,7 +24,8 @@ class SearchAppbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
-    final titleStyle = Theme.of(context).textTheme.titleSmall;
+    // final titleStyle = Theme.of(context).textTheme.titleSmall;
+    const titleStyle = TextStyle(fontWeight: FontWeight.normal, fontSize: 20);
 
     Future<bool> showConfirmDialog() async {
       return await showDialog(
@@ -83,7 +84,19 @@ class SearchAppbar extends ConsumerWidget {
             child: Row(children: [
               ElevatedButton.icon(
                 onPressed: () {
-                  final searchMovies = ref.read(searchProductsProvider);
+                  final saleState = ref.watch(saleProvider(idSale));
+
+                  if (saleState.sale!.isCompleted) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content:
+                          Text('Ya no se puede editar una venta finalizada.'),
+                    ));
+
+                    return;
+                  }
+                  final searchProducts = ref.read(searchProductsProvider);
 
                   showSearch<Product?>(
                           query: "",
@@ -92,7 +105,7 @@ class SearchAppbar extends ConsumerWidget {
                               searchProducts: ref
                                   .read(searchProductsProvider.notifier)
                                   .searchMoviesByQuery,
-                              initialProduct: searchMovies))
+                              initialProduct: searchProducts))
                       .then((product) {
                     if (product == null) {
                       return;
@@ -101,14 +114,27 @@ class SearchAppbar extends ConsumerWidget {
                   });
                 },
                 icon: const Icon(Icons.search),
-                label: Text(
+                label: const Text(
                   'Buscar producto',
                   style: titleStyle,
                 ),
               ),
-              const Spacer(),
+              // const Spacer(),
               IconButton(
                   onPressed: () async {
+                    final saleState = ref.watch(saleProvider(idSale));
+
+                    if (saleState.sale!.isCompleted) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content:
+                            Text('Ya no se puede editar una venta finalizada.'),
+                      ));
+
+                      return;
+                    }
+
                     String barcodeScanRes = "";
                     try {
                       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(

@@ -8,3 +8,4 @@ export 'form_add_product.dart';
 export 'form_update_product.dart';
 export 'card_sales.dart';
 export 'form_product.dart';
+export 'calculator_form.dart';

@@ -15,7 +15,8 @@ class CustomAppbar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
-    final titleStyle = Theme.of(context).textTheme.titleSmall;
+    // final titleStyle = Theme.of(context).textTheme.titleSmall;
+    const titleStyle = TextStyle(fontWeight: FontWeight.normal, fontSize: 20);
 
     void pushToScreen(String path) {
       context.push(path);
@@ -24,13 +25,13 @@ class CustomAppbar extends ConsumerWidget {
     return SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 1),
+          padding: const EdgeInsets.symmetric(horizontal: 0),
           child: SizedBox(
             width: double.infinity,
             child: Row(children: [
               ElevatedButton.icon(
                 onPressed: () {
-                  final searchMovies = ref.read(searchProductsProvider);
+                  final searchProducts = ref.read(searchProductsProvider);
 
                   showSearch<Product?>(
                           query: "",
@@ -39,19 +40,19 @@ class CustomAppbar extends ConsumerWidget {
                               searchProducts: ref
                                   .read(searchProductsProvider.notifier)
                                   .searchMoviesByQuery,
-                              initialProduct: searchMovies))
+                              initialProduct: searchProducts))
                       .then((product) {
                     if (product == null) return;
                     pushToScreen('/product/${product.id}');
                   });
                 },
                 icon: const Icon(Icons.search),
-                label: Text(
+                label: const Text(
                   'Buscar producto',
                   style: titleStyle,
                 ),
               ),
-              const Spacer(),
+              // const Spacer(),
               IconButton(
                   onPressed: () async {
                     String barcodeScanRes = "";
