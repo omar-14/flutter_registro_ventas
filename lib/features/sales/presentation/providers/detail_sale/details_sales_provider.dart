@@ -155,6 +155,41 @@ class DetailsSalesNotifier extends StateNotifier<DetailsSalesState> {
 
       state.detailsSales[index] = updateDetailProduct;
 
+      saleState.loadSale();
+      salesState.refreshPage();
+
+      state = state.copyWith(isLoading: false);
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  Future updateDetailProduct(
+      Map<String, String> detailLike, String detailId) async {
+    try {
+      if (state.isLoading) return;
+
+      state = state.copyWith(isLoading: true);
+
+      final updateDetailProduct =
+          await detailsSalesRepository.updateDetailSale(detailLike, detailId);
+
+      final product = await productsRepository
+          .getProductById(updateDetailProduct.productId);
+
+      updateDetailProduct.product = product;
+
+      final index =
+          state.detailsSales.indexWhere((element) => element.id == detailId);
+
+      state.detailsSales[index] = updateDetailProduct;
+
+      state = state.copyWith(offset: 0);
+      salesState.state = salesState.state.copyWith(offset: 0);
+
+      await saleState.loadSale();
+      await salesState.refreshPage();
+
       state = state.copyWith(isLoading: false);
     } catch (e) {
       throw Exception();

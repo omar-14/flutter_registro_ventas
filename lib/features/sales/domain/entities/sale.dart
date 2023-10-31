@@ -1,4 +1,4 @@
-import 'package:intventory/features/auth/domain/domain.dart';
+import 'package:intventory/features/users/domain/entities/user.dart';
 
 class Sale {
   String id;

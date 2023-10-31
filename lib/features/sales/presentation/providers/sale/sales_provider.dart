@@ -20,9 +20,9 @@ class SalesNotifier extends StateNotifier<SalesState> {
   }
 
   Future refreshPage() async {
-    if (state.isLoading || state.isLastPage) return;
+    if (state.isLoading) return;
 
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, offset: 0);
 
     final sales = await salesRepository.listSales(
         limit: state.limit, offset: state.offset);
@@ -94,6 +94,7 @@ class SalesNotifier extends StateNotifier<SalesState> {
 
 class SalesState {
   final bool isLastPage;
+  final bool isFinished;
   final int limit;
   final int offset;
   final bool isLoading;
@@ -101,6 +102,7 @@ class SalesState {
 
   SalesState(
       {this.isLastPage = false,
+      this.isFinished = false,
       this.limit = 10,
       this.offset = 0,
       this.isLoading = false,
@@ -108,6 +110,7 @@ class SalesState {
 
   SalesState copyWith({
     bool? isLastPage,
+    bool? isFinished,
     int? limit,
     int? offset,
     bool? isLoading,
@@ -115,6 +118,7 @@ class SalesState {
   }) =>
       SalesState(
         isLastPage: isLastPage ?? this.isLastPage,
+        isFinished: isFinished ?? this.isFinished,
         limit: limit ?? this.limit,
         offset: offset ?? this.offset,
         isLoading: isLoading ?? this.isLoading,

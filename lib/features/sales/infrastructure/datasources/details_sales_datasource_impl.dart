@@ -8,7 +8,9 @@ class DetailsSalesDatasourceImpl extends DetailsSalesDatasource {
   final String accessToken;
 
   DetailsSalesDatasourceImpl({required this.accessToken})
-      : dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
+      : dio = Dio(BaseOptions(
+            baseUrl: Environment.apiUrl,
+            headers: {"Authorization": "Bearer $accessToken"}));
 
   @override
   Future<DetailsSale> createDetailSale(
@@ -30,7 +32,7 @@ class DetailsSalesDatasourceImpl extends DetailsSalesDatasource {
     try {
       final response = await dio.delete("/sales-products/$id");
 
-      return response.statusCode == 204;
+      return response.statusCode == 200;
     } catch (e) {
       throw Exception();
     }
@@ -40,7 +42,7 @@ class DetailsSalesDatasourceImpl extends DetailsSalesDatasource {
   Future<List<DetailsSale>> getDetailsSalesById(String id,
       {int limit = 10, int offset = 0}) async {
     try {
-      final response = await dio.get("/list/sales-products",
+      final response = await dio.get("/sales-products/list",
           queryParameters: {"limit": limit, "offset": offset, "id": id});
 
       final List<DetailsSale> detailsSales = [];
@@ -61,7 +63,7 @@ class DetailsSalesDatasourceImpl extends DetailsSalesDatasource {
       Map<String, dynamic> detailSaleLike, String id) async {
     try {
       final response =
-          await dio.patch("/sales-products/$id/", data: detailSaleLike);
+          await dio.put("/sales-products/update/$id", data: detailSaleLike);
 
       final DetailsSale detailSale =
           DetailSaleMapper.jsonToEntity(response.data);

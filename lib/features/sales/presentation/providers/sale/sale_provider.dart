@@ -55,6 +55,8 @@ class SaleNotifier extends StateNotifier<SaleState> {
 
       salesState.state.sales[index] = updateSale;
 
+      loadSale();
+
       state = state.copyWith(isLoading: false);
     } catch (e) {
       throw Exception();

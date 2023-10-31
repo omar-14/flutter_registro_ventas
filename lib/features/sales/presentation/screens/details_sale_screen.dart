@@ -23,10 +23,18 @@ class DetailsSaleScreen extends ConsumerWidget {
     );
   }
 
+  void showSnackbar(BuildContext context, String content) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(content)));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final salesprovider = ref.watch(salesProvider.notifier);
     final detailsSalesState = ref.watch(detailsSalesProvider(idSale));
+
     return Scaffold(
       appBar: AppBar(
         title: SearchAppbar(idSale: idSale),
@@ -51,7 +59,25 @@ class DetailsSaleScreen extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          final saleState = ref.watch(saleProvider(idSale));
+
+          if (saleState.sale!.isCompleted) {
+            context.go("/sales/$idSale/final");
+            return;
+          }
+
+          if (detailsSalesState.detailsSales.isEmpty) {
+            showSnackbar(context, "Debes agregar productos a la venta.");
+            return;
+          }
+
+          final likeSale = {"id": idSale, "is_completed": true};
+
+          ref.watch(saleProvider(idSale).notifier).updateSale(likeSale);
+
+          context.go("/sales/$idSale/final");
+        },
         label: const Text("Finalizar Venta"),
         icon: const Icon(Icons.shopping_cart_checkout_outlined),
       ),
@@ -161,6 +187,7 @@ class _ListDetailsSalesView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailsSalesState = ref.watch(detailsSalesProvider(idSale));
+    final saleState = ref.watch(saleProvider(idSale));
 
     return (detailsSalesState.isLoading)
         ? const CustomProgresIndicator()
@@ -181,6 +208,8 @@ class _ListDetailsSalesView extends ConsumerWidget {
                     child: const Icon(Icons.check, color: Colors.transparent),
                   ),
                   confirmDismiss: (DismissDirection direction) async {
+                    if (saleState.sale!.isCompleted) return false;
+
                     final isDelete = await showDialogOfConfirmation(context);
 
                     if (!isDelete) {
@@ -205,6 +234,18 @@ class _ListDetailsSalesView extends ConsumerWidget {
                           detail: detailSale,
                           product: product,
                           onTap: () {
+                            if (saleState.sale!.isCompleted) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text(
+                                    'Ya no se puede editar una venta finalizada.'),
+                              ));
+
+                              return;
+                            }
+
                             showFormUpdateProduct(
                                 ref, context, detailSale, product);
                           },

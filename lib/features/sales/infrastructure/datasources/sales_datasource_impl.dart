@@ -2,13 +2,17 @@ import 'package:dio/dio.dart';
 import 'package:intventory/config/constants/environments.dart';
 import 'package:intventory/features/sales/domain/domain.dart';
 import 'package:intventory/features/sales/infrastructure/infrastructure.dart';
+import 'package:intventory/features/users/domain/domain.dart';
+import 'package:intventory/features/users/infrastructure/mappers/user_mapper.dart';
 
 class SalesDatasourceImpl extends SalesDatasource {
   late final Dio dio;
   final String accessToken;
 
   SalesDatasourceImpl({required this.accessToken})
-      : dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
+      : dio = Dio(BaseOptions(
+            baseUrl: Environment.apiUrl,
+            headers: {"Authorization": "Bearer $accessToken"}));
 
   @override
   Future<Sale> createSale(Map<String, dynamic> saleLike) async {
@@ -92,7 +96,13 @@ class SalesDatasourceImpl extends SalesDatasource {
       final response =
           await dio.patch("/sales/${saleLike["id"]}/", data: saleLike);
 
-      final Sale sale = SaleMapper.jsonToEntity(response.data);
+      final Sale sale = SaleMapper.jsonToEntityUpdate(response.data);
+
+      final userResponse = await dio.get("/users/${sale.userId}/");
+
+      final User? user = UserMapper.jsonToEntity(userResponse.data);
+
+      sale.user = user;
 
       return sale;
     } catch (e) {
