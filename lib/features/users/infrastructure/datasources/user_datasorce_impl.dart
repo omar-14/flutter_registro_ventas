@@ -8,7 +8,9 @@ class UserDatasorceImpl extends UserDatasource {
   final String accessToken;
 
   UserDatasorceImpl({required this.accessToken})
-      : dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
+      : dio = Dio(BaseOptions(
+            baseUrl: Environment.apiUrl,
+            headers: {"Authorization": "Bearer $accessToken"}));
 
   @override
   Future<User> createUser(Map<String, dynamic> userLike) async {

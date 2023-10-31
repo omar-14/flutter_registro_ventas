@@ -5,6 +5,9 @@ import 'package:intventory/config/router/menu_items.dart';
 import 'package:intventory/features/auth/presentation/providers/providers.dart';
 import 'custom_filled_button.dart';
 
+// import 'package:intventory/features/shared/infrastructure/services/key_value_storage.dart';
+// import 'package:intventory/features/shared/infrastructure/services/key_value_storage_impl.dart';
+
 class SideMenu extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
@@ -24,6 +27,10 @@ class SideMenuState extends ConsumerState<SideMenu> {
 
     final userAuth = ref.read(authProvider);
 
+    final items = (userAuth.userRole == AuthRole.admin)
+        ? appAdminMenuItems
+        : appVentasMenuItems;
+
     return NavigationDrawer(
         elevation: 1,
         selectedIndex: navDrawerIndex,
@@ -32,7 +39,7 @@ class SideMenuState extends ConsumerState<SideMenu> {
             navDrawerIndex = value;
           });
 
-          final menuItems = appMenuItems[value];
+          final menuItems = items[value];
 
           context.push(menuItems.link);
 
@@ -49,7 +56,7 @@ class SideMenuState extends ConsumerState<SideMenu> {
                 "${userAuth.user!.firstName} ${userAuth.user!.lastName}",
                 style: textStyles.titleSmall),
           ),
-          ...appMenuItems.map((menuItem) => NavigationDrawerDestination(
+          ...items.map((menuItem) => NavigationDrawerDestination(
               icon: Icon(menuItem.icon), label: Text(menuItem.title))),
           const Padding(
             padding: EdgeInsets.fromLTRB(28, 16, 28, 10),

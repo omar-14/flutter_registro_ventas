@@ -141,13 +141,16 @@ class _ProductItem extends StatelessWidget {
                       style: textStyle,
                     ),
                     Text(product.brand),
-                    const SizedBox(width: 10),
+                  ],
+                ),
+                const SizedBox(height: 3),
+                Row(
+                  children: [
                     const Text(
                       "Tipo: ",
                       style: textStyle,
                     ),
                     Text(product.productType),
-                    // Text(product.),
                   ],
                 ),
                 const SizedBox(height: 3),

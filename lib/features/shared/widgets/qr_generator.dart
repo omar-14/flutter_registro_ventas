@@ -3,18 +3,23 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intventory/features/inventory/presentation/providers/providers.dart';
 // import 'package:qr_code_generator/styles.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:go_router/go_router.dart';
 
-class QRGenerator extends StatefulWidget {
+class QRGenerator extends ConsumerStatefulWidget {
   final String keyProduct;
-  const QRGenerator({super.key, required this.keyProduct});
+  final String idProduct;
+  const QRGenerator(
+      {super.key, required this.keyProduct, required this.idProduct});
 
   @override
-  State<QRGenerator> createState() => _MainPageState();
+  MainPageState createState() => MainPageState();
 }
 
-class _MainPageState extends State<QRGenerator> {
+class MainPageState extends ConsumerState<QRGenerator> {
   // final String keyProduct;
   final GlobalKey _qrkey = GlobalKey();
   bool dirExists = false;
@@ -63,8 +68,21 @@ class _MainPageState extends State<QRGenerator> {
       await file.writeAsBytes(pngBytes);
 
       if (!mounted) return;
-      const snackBar = SnackBar(content: Text('QR Guardado'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      final productState = ref.read(productProvider(widget.idProduct));
+
+      final formProvider =
+          ref.read(productFormProvider(productState.product!).notifier);
+
+      formProvider.onKeyChanged(widget.keyProduct);
+
+      formProvider.onFormSubmit().then((value) {
+        if (!value) return;
+
+        const snackBar = SnackBar(content: Text('QR Guardado'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+        context.go("/inventory");
+      });
     } catch (e) {
       if (!mounted) return;
       const snackBar = SnackBar(content: Text('Ocurrio un Error al guardar'));
