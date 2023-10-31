@@ -58,26 +58,37 @@ class _SalesViewState extends ConsumerState<_SalesView> {
     super.dispose();
   }
 
+  Future<void> onRefresh() async {
+    setState(() {});
+    await Future.delayed(const Duration(seconds: 2));
+
+    ref.watch(salesProvider.notifier).refreshPage();
+  }
+
   @override
   Widget build(BuildContext context) {
     final salesState = ref.watch(salesProvider);
 
-    return ListView.builder(
-      itemCount: salesState.sales.length + 1,
-      controller: scrollController,
-      itemBuilder: (context, index) {
-        if (index < salesState.sales.length) {
-          final sale = salesState.sales[index];
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      edgeOffset: 50,
+      child: ListView.builder(
+        itemCount: salesState.sales.length + 1,
+        controller: scrollController,
+        itemBuilder: (context, index) {
+          if (index < salesState.sales.length) {
+            final sale = salesState.sales[index];
 
-          return CardSales(
-            sale: sale,
-          );
-        } else {
-          // Elemento de relleno que actúa como espacio en blanco
-          return const SizedBox(
-              height: 80.0); // Ajusta la altura según tus necesidades
-        }
-      },
+            return CardSales(
+              sale: sale,
+            );
+          } else {
+            // Elemento de relleno que actúa como espacio en blanco
+            return const SizedBox(
+                height: 280.0); // Ajusta la altura según tus necesidades
+          }
+        },
+      ),
     );
   }
 }
