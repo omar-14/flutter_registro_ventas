@@ -8,7 +8,7 @@ class UserMapper {
         firstName: json["first_name"],
         lastName: json["last_name"],
         role: json["role"],
-        token: json["token"] ?? "",
+        token: json["access"] ?? "",
         refresh: json["refresh"] ?? "",
       );
 

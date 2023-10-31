@@ -55,17 +55,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
   void _setLoggedUser(User user) async {
     await keyValueStorageService.setKeyValue("token", user.token);
     await keyValueStorageService.setKeyValue("refresh", user.refresh);
+    final isAdmin = user.role == "admin";
 
     state = state.copyWith(
-        user: user, errorMessage: "", authStatus: AuthStatus.authenticated);
+        user: user,
+        errorMessage: "",
+        authStatus: AuthStatus.authenticated,
+        userRole: isAdmin ? AuthRole.admin : AuthRole.ventas);
   }
 
   Future<void> logout([String? errorMessage]) async {
     await keyValueStorageService.removeKey("token");
     await keyValueStorageService.removeKey("refresh");
+    await keyValueStorageService.removeKey("idAdmin");
 
     state = state.copyWith(
         authStatus: AuthStatus.notAuthenticated,
+        userRole: AuthRole.checking,
         user: null,
         errorMessage: errorMessage);
   }
@@ -73,24 +79,29 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
 enum AuthStatus { checking, authenticated, notAuthenticated }
 
+enum AuthRole { checking, admin, ventas }
+
 class AuthState {
   final AuthStatus authStatus;
   final User? user;
   final String errorMessage;
+  final AuthRole? userRole;
 
   AuthState(
       {this.authStatus = AuthStatus.checking,
       this.user,
-      this.errorMessage = ""});
+      this.errorMessage = "",
+      this.userRole = AuthRole.checking});
 
   AuthState copyWith({
     AuthStatus? authStatus,
     User? user,
     String? errorMessage,
+    AuthRole? userRole,
   }) =>
       AuthState(
-        authStatus: authStatus ?? this.authStatus,
-        user: user ?? this.user,
-        errorMessage: errorMessage ?? this.errorMessage,
-      );
+          authStatus: authStatus ?? this.authStatus,
+          user: user ?? this.user,
+          errorMessage: errorMessage ?? this.errorMessage,
+          userRole: userRole ?? this.userRole);
 }
