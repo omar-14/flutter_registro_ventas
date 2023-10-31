@@ -52,6 +52,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        archivesBaseName = "INTventory_v${flutterVersionName}_${flutterVersionCode}"
     }
 
     buildTypes {
